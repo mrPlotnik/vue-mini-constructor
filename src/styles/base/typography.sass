@@ -1,0 +1,61 @@
+*
+	margin: 0
+	padding: 0
+	// outline: 1px solid $color-main--transparent-30
+*, ::before, ::after
+	box-sizing: border-box
+html
+	overflow-x: hidden
+body
+	// font-family: $font, sans-serif
+	font-size: 16px
+	line-height: 1.25em
+	// overflow-x: hidden
+
+.container  
+	position: relative
+	min-width: 320px
+	min-height: 100vh	
+	max-width: 1024px
+	display: flex
+	flex-direction: column	
+	margin: 0 auto
+	color: #222
+	// width: 100%	
+	// padding: 0 $gutter-container-320
+
+	
+
+img
+	width: 100%
+* >	svg
+	width: inherit
+	height: inherit
+a
+	width: fit-content
+	text-decoration: none
+	// color: $color-main
+	outline: transparent
+	// +transition(color)
+	&:hover
+		// color: $color-secondary--light
+
+h1, h2, h3, h4, h5, h6
+	line-height: inherit
+	font-size: inherit
+	text-transform: uppercase
+.inline-link
+	display: inline-flex
+.stop-scroll
+	overflow: hidden
+.list-reset
+	display: flex
+	list-style: none
+.btn-reset
+	border: none
+	cursor: pointer
+	background-color: transparent
+.i
+	display: block
+	font-style: italic    
+  
