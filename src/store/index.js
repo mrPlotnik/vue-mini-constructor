@@ -5,13 +5,27 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    blocks: [],
   },
+
   getters: {
+    // Получаем информацию о блоках
+    blockInfo(state) {
+      return state.blocks;
+    },
   },
+
   mutations: {
+    updateBlocks(state, blocks) {
+      state.blocks = blocks;
+    },
   },
+
   actions: {
+    updateBlocks(context, blocks) {
+      context.commit('updateBlocks', blocks);
+    },
   },
-  modules: {
-  },
+
+  modules: {},
 });

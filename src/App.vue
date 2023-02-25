@@ -8,5 +8,21 @@
   </div>
 </template>
 
-<style lang="scss">
-</style>
+<script>
+import { mapActions, mapMutations } from 'vuex';
+
+export default {
+  methods: {
+    ...mapActions(['loadBasket']),
+    ...mapMutations(['updateBlocks']),
+  },
+  created() {
+    // Проверяем наличие данных в localStorage
+    const blocks = JSON.parse(localStorage.getItem('blocks'));
+    // Если данные есть, вызываем мутацию
+    if (blocks) {
+      this.updateBlocks(blocks);
+    }
+  },
+};
+</script>
