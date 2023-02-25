@@ -1,7 +1,6 @@
 *
 	margin: 0
-	padding: 0
-	// outline: 1px solid $color-main--transparent-30
+	padding: 0	
 *, ::before, ::after
 	box-sizing: border-box
 html
@@ -11,11 +10,12 @@ body
 	font-size: 16px
 	line-height: 1.25em
 	// overflow-x: hidden
+	*
+		outline: 1px solid #444
 
 .container  
 	position: relative
 	min-width: 320px
-	min-height: 100vh	
 	max-width: 1024px
 	display: flex
 	flex-direction: column	
@@ -23,6 +23,17 @@ body
 	color: #222
 	// width: 100%	
 	// padding: 0 $gutter-container-320
+
+.hello,
+.hi
+	margin-bottom: 10px
+	padding: 5px
+
+nav
+	margin-bottom: 15px		
+
+h2
+	margin-bottom: 5px	
 
 	
 

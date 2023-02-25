@@ -1,9 +1,6 @@
 <template lang="pug">
 
-.container
-  .row
-    span PRO
-    <HelloWorld />
+<HelloWorld />
 
 </template>
 
