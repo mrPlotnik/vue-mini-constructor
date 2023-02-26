@@ -17,6 +17,9 @@ export default new Vuex.Store({
 
   mutations: {
     updateBlocks(state, blocks) {
+      // Записываем в localStorage
+      localStorage.setItem('blocks', JSON.stringify(blocks));
+      // Записываем в state
       state.blocks = blocks;
     },
   },

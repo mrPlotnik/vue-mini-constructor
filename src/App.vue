@@ -9,11 +9,10 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex';
+import { mapMutations } from 'vuex';
 
 export default {
   methods: {
-    ...mapActions(['loadBasket']),
     ...mapMutations(['updateBlocks']),
   },
   created() {
