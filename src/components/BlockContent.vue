@@ -4,9 +4,11 @@ div
   //- Content
   div(v-if="block.id === 0")
 
-    button.btn-reset.btn.block-edit(
-      @click="editMode()"
-    ) {{ isEditBtnText }}
+    .block__top
+      button.btn-reset.btn.block__edit-btn(
+        :class="{isActive: isEdit}"
+        @click="editMode()"
+      ) {{ isEditBtnText }}
 
     .block
 
@@ -91,7 +93,8 @@ export default {
   data() {
     return {
       isEdit: false,
-      isEditBtnText: 'Edit mode',
+      isEditBtnText: 'Edit',
+      isEditBtnColor: '#29e129',
       currentText: '',
       currentHeader: '',
     };
@@ -111,7 +114,7 @@ export default {
         this.saveText();
         this.saveHeader();
         this.isEdit = false;
-        this.isEditBtnText = 'Edit mode';
+        this.isEditBtnText = 'Edit';
       }
     },
     saveText() {
@@ -139,9 +142,18 @@ export default {
 </script>
 
 <style lang="sass">
-  .wrap
+  .block__top
     display: flex
-    justify-content: space-between
+    justify-content: flex-end
+
+  .block__edit-btn
+    margin-bottom: 5px
+    padding: 3px 5px
+    border: 1px solid #000
+    border-radius: 5px
+    background-color: #e37676
+  .isActive
+    background-color: #7cd57c
 
   .block
     margin-bottom: 5px
@@ -207,5 +219,6 @@ export default {
   .block__delete-btn
     padding: 2px 5px
     border: 1px solid #555
+    border-radius: 5px
 
 </style>

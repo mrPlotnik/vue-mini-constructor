@@ -8,8 +8,8 @@
       draggable="true"
       @dragstart="dragstart($event, index)"
       @dragend="dragend($event)"
-      @dragover.prevent="dragover($event, block)"
-      @dragenter="dragenter($event, block)"
+      @dragover.prevent="dragover($event)"
+      @dragenter.prevent="dragenter($event)"
       @dragleave="dragleave($event, block)"
       @drop="drop(index)"
     )
@@ -129,17 +129,16 @@ export default {
 
   .box
     display: flex
-    // border: 3px solid #666
+    border: 1px solid #666
     border-radius: .5em
-    margin-bottom: 10px
+    margin: 5px 10px
     padding: 10px
     cursor: move
-    // background: #9b9b9b
   .box > div
     width: 100%
 
   .box.over
-    border: 3px dotted #666
+    border: 1px dotted #666
 
   [draggable]
     user-select: none
