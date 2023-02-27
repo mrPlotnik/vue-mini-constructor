@@ -3,15 +3,26 @@
 	padding: 0	
 *, ::before, ::after
 	box-sizing: border-box
+
+@include font-face($font, "../fonts/Robotocondensedlight", 100)	
+@include font-face($font, "../fonts/Robotocondensedregular", 400)	
+@include font-face($font, "../fonts/Robotocondensedbold", 600)		
+
 html
 	overflow-x: hidden
-body
-	// font-family: $font, sans-serif
+body	
 	font-size: 16px
 	line-height: 1.25em
 	// overflow-x: hidden
 	*
 		// outline: 1px solid #444
+
+body,
+input,
+textarea,
+button 
+	font-family: $font, sans-serif
+
 
 .container  
 	position: relative
@@ -34,9 +45,7 @@ h2
 
 img
 	width: 100%
-* >	svg
-	width: inherit
-	height: inherit
+
 a
 	width: fit-content
 	text-decoration: none

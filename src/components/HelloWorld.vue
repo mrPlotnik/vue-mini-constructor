@@ -1,17 +1,17 @@
 <template lang="pug">
 
 .hello
-  .container.pro.droppable(
-    @drop="onDrop($event, mainBlock)"
-    @dragover.prevent
-    @dragenter.prevent
-  )
+  .container.pro.droppable(:key="reRender")
 
-    .qwe.draggable.box(
+    .draggable.box(
       v-for="(block, index) in blockState"
-      :key="block.order"
-      @dragstart="onDragStart($event, block.order)"
       draggable="true"
+      @dragstart="dragstart($event, index)"
+      @dragend="dragend($event)"
+      @dragover.prevent="dragover($event, block)"
+      @dragenter="dragenter($event, block)"
+      @dragleave="dragleave($event, block)"
+      @drop="drop(index)"
     )
       BlockContent(
         :block="block"
@@ -41,21 +41,23 @@ export default {
   components: { BlockContent },
   data() {
     return {
-      orderCount: 0,
-      mainBlock: 'PRO',
+      dragBlockIndex: '',
+      reRender: 0,
       defaultBlocks: [
         {
           id: 0,
-          title: 'Content',
+          header: 'Content',
           text: 'Some text.',
         },
         {
           id: 1,
-          title: 'Cards',
+          header: 'Cards',
+          text: 'Some text.',
         },
         {
           id: 2,
-          title: 'Films',
+          header: 'Films',
+          text: 'Some text.',
         },
       ],
     };
@@ -67,115 +69,51 @@ export default {
   },
   methods: {
     ...mapActions(['updateBlocks']),
-    onDragStart(e, orderCount) {
-      e.dataTransfer.dropEffect = 'move';
+    // добавить новый блок
+    addBlock(index) {
+      this.blockState.push(this.defaultBlocks[index]);
+      this.updateBlocks(this.blockState);
+    },
+    // пользователь начинает перетаскивание элемента
+    dragstart(e, index) {
+      e.target.style.opacity = 0.5;
       e.dataTransfer.effectAllowed = 'move';
-      console.log(orderCount.toString());
-      e.dataTransfer.setData('order', orderCount.toString());
+      this.dragBlockIndex = index;
+      return index;
     },
-    onDrop() {
-      // const qwe = parseInt(e.dataTransfer.getData('order'), 10);
-      // console.log(qwe);
-
-      let dragSrcEl = null;
-
-      function handleDragStart(e) {
-        this.style.opacity = '0.4';
-
-        dragSrcEl = this;
-
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', this.innerHTML);
-      }
-
-      function handleDragOver(e) {
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
-
-        e.dataTransfer.dropEffect = 'move';
-
-        return false;
-      }
-
-      function handleDragEnter() {
-        this.classList.add('over');
-      }
-
-      function handleDragLeave() {
-        this.classList.remove('over');
-      }
-
-      function handleDrop(e) {
-        if (e.stopPropagation) {
-          e.stopPropagation(); // stops the browser from redirecting.
-        }
-
-        if (dragSrcEl !== this) {
-          dragSrcEl.innerHTML = this.innerHTML;
-          this.innerHTML = e.dataTransfer.getData('text/html');
-        }
-
-        return false;
-      }
-
-      const items = document.querySelectorAll('.container .box');
-
-      function handleDragEnd() {
-        this.style.opacity = '1';
-
-        items.forEach((item) => {
-          item.classList.remove('over');
-        });
-      }
-
-      items.forEach((item) => {
-        item.addEventListener('dragstart', handleDragStart, false);
-        item.addEventListener('dragenter', handleDragEnter, false);
-        item.addEventListener('dragover', handleDragOver, false);
-        item.addEventListener('dragleave', handleDragLeave, false);
-        item.addEventListener('drop', handleDrop, false);
-        item.addEventListener('dragend', handleDragEnd, false);
-      });
+    // перетаскиваемый элемент достигает конечного элемента
+    dragenter(e) {
+      e.target.classList.add('over');
     },
-
-    addBlock(id) {
-      const blocksArr = this.blockState;
-      const index = this.defaultBlocks.findIndex((x) => x.id === id);
-      blocksArr.push({
-        ...this.defaultBlocks[index],
-        order: this.orderCount,
-      });
-      this.orderCount += 1;
+    // курсор мыши наведен на элемент при перетаскивании
+    dragover(e) {
+      e.dataTransfer.dropEffect = 'move';
+    },
+    // курсор мыши покидает пределы перетаскиваемого элемента
+    dragleave(e) {
+      e.target.classList.remove('over');
+    },
+    // происходит drop элемента
+    drop(index) {
+      const blocks = this.blockState;
+      [blocks[this.dragBlockIndex], blocks[index]] = [blocks[index], blocks[this.dragBlockIndex]];
 
       // экшн вызовет мутацию и перезапишет state
-      this.updateBlocks(blocksArr);
+      this.updateBlocks(blocks);
+      this.reRender += 1;
+
+      // }
+    },
+    // пользователь отпускает курсор мыши в процессе перетаскивания
+    dragend(e) {
+      e.target.style.opacity = 1;
     },
   },
 };
 </script>
 
 <style lang="sass">
-  .pro
-    padding: 10px
-    background: #cbcbcb
-  .qwe
-    display: flex
-    padding: 10px
-    background: #9b9b9b
-    margin-bottom: 10px
-    h2
-      width: 100%
-      flex-shrink: 0
-      margin-bottom: 15px
-      margin-right: 15px
-      background: aqua
-    .draggable:not(:last-child)
-      margin-bottom: 5px
-      padding-bottom: 0
-    .draggable p
-      padding: 5px
-      background: #aaa
+
   .droppable:not(:last-child)
     margin-bottom: 5px
 
@@ -185,16 +123,20 @@ export default {
   .btn
     display: flex
     width: fit-content
-    padding: 15px
-    background-color: green
+
   .btn:not(:last-child)
     margin-right: 5px
 
   .box
-    border: 3px solid #666
+    display: flex
+    // border: 3px solid #666
     border-radius: .5em
+    margin-bottom: 10px
     padding: 10px
     cursor: move
+    // background: #9b9b9b
+  .box > div
+    width: 100%
 
   .box.over
     border: 3px dotted #666

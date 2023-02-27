@@ -27,6 +27,7 @@ export default new Vuex.Store({
   actions: {
     updateBlocks(context, blocks) {
       context.commit('updateBlocks', blocks);
+      console.log('update');
     },
   },
 

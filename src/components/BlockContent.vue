@@ -3,33 +3,43 @@ div
 
   //- Content
   div(v-if="block.id === 0")
-    .wrap
-      h2 {{ block.title }}
-      button.btn-reset.btn(
-        @click="deleteBlock(block.index)"
-      ) Delete
 
-    .input-wrap
-      p(
-        v-show="!isEdit"
-      ) {{ block.text }}
+    button.btn-reset.btn.block-edit(
+      @click="editMode()"
+    ) {{ isEditBtnText }}
 
-      input.input(
-        type="text"
-        v-model="currentText"
-        v-show="isEdit"
-      )
+    .block
 
-      button.btn-reset.btn(
-        @click="editText()"
-      ) {{ textEditButton }}
+      .block__header-wrap
+        h2(v-show="!isEdit") {{ block.header }}
+        input.block__header-input(
+          type="text"
+          v-model="currentHeader"
+          v-show="isEdit"
+        )
+
+      .block__text-wrap
+        .block__text-wrap
+          p.block__text(
+            v-show="!isEdit"
+          ) {{ block.text }}
+          input.block__text-input(
+            type="text"
+            v-model="currentText"
+            v-show="isEdit"
+          )
+
+    .block__footer
+      button.btn-reset.btn.block__delete-btn(
+        @click="deleteBlock(index)"
+      ) Delete block
 
   //- Cards
   div(v-if="block.id === 1")
     .wrap
       h2 {{ block.title }}
       button.btn-reset.btn(
-        @click="deleteBlock(block.index)"
+        @click="deleteBlock(index)"
       ) Delete
 
     .input-wrap
@@ -52,7 +62,7 @@ div
     .wrap
       h2 {{ block.title }}
       button.btn-reset.btn(
-        @click="deleteBlock(block.index)"
+        @click="deleteBlock(index)"
       ) Delete
 
     .input-wrap
@@ -81,8 +91,9 @@ export default {
   data() {
     return {
       isEdit: false,
+      isEditBtnText: 'Edit mode',
       currentText: '',
-      textEditButton: 'Edit',
+      currentHeader: '',
     };
   },
   computed: {
@@ -92,7 +103,28 @@ export default {
   },
   methods: {
     ...mapActions(['updateBlocks']),
+    editMode() {
+      if (!this.isEdit) {
+        this.isEdit = true;
+        this.isEditBtnText = 'Apply';
+      } else {
+        this.saveText();
+        this.saveHeader();
+        this.isEdit = false;
+        this.isEditBtnText = 'Edit mode';
+      }
+    },
+    saveText() {
+      this.blockState[this.index].text = this.currentText;
+      this.updateBlocks(this.blockState);
+    },
+    saveHeader() {
+      this.blockState[this.index].header = this.currentHeader;
+      this.updateBlocks(this.blockState);
+    },
+
     deleteBlock(index) {
+      console.log(index);
       const blocksArr = this.blockState;
       blocksArr.splice(index, 1);
 
@@ -100,18 +132,6 @@ export default {
       localStorage.setItem('blocks', JSON.stringify(blocksArr));
       // экшн вызовет мутацию и перезапишет state (данными из состояния этого компонента)
       this.updateBlocks(blocksArr);
-    },
-    editText() {
-      if (this.isEdit === false) {
-        this.textEditButton = 'Apply';
-        this.isEdit = true;
-      } else {
-        this.textEditButton = 'Edit';
-        const blocksArr = this.blockState;
-        blocksArr[this.index].text = this.currentText;
-        this.updateBlocks(blocksArr);
-        this.isEdit = false;
-      }
     },
   },
 };
@@ -122,4 +142,70 @@ export default {
   .wrap
     display: flex
     justify-content: space-between
+
+  .block
+    margin-bottom: 5px
+    padding: 10px
+    background: #cbcbcb
+    .draggable p
+      padding: 5px
+      background: #aaa
+
+  .block__header-wrap
+    display: flex
+    justify-content: space-between
+    margin-bottom: 15px
+    h2
+      font-weight: 600
+      font-size: 20px
+      line-height: inherit
+
+  .block__header-input
+    display: flex
+    width: 100%
+    margin-right: 10px
+    border: none
+    border-bottom: 1px solid #000
+    font-weight: 600
+    font-size: 20px
+    line-height: inherit
+    background-color: transparent
+
+  .block__header-edit-btn
+    padding: 2px 5px
+    border: 1px solid #555
+
+  .block__text-wrap
+    display: flex
+    justify-content: space-between
+    width: 100%
+
+  .block__text
+    line-height: inherit
+
+  .block__text-input
+    display: flex
+    width: 100%
+    margin-right: 10px
+    border: none
+    border-bottom: 1px solid #000
+    line-height: inherit
+    background-color: transparent
+
+  .block__text-wrap
+    display: flex
+    justify-content: space-between
+
+  .block__text-edit-btn
+    padding: 2px 5px
+    border: 1px solid #555
+
+  .block__footer
+    display: flex
+    justify-content: flex-end
+
+  .block__delete-btn
+    padding: 2px 5px
+    border: 1px solid #555
+
 </style>
