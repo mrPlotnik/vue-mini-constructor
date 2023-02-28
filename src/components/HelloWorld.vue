@@ -1,48 +1,66 @@
 <template lang="pug">
 
-.hello
-  .container.pro.droppable(:key="reRender")
-
-    .draggable.box(
-      v-for="(block, index) in blockState"
-      draggable="true"
-      @dragstart="dragstart($event, index)"
-      @dragend="dragend($event)"
-      @dragover.prevent="dragover($event)"
-      @dragenter.prevent="dragenter($event)"
-      @dragleave="dragleave($event, block)"
-      @drop="drop(index)"
-    )
-      BlockContent(
-        :block="block"
-        :index="index"
+main
+ .container.blocks(:key="reRender")
+    .row
+      div.blocks__header
+        button.btn-reset.btn.block__edit-btn(
+          @click="moveMode = moveMode === false ? true : false"
+        ) Move mode
+    .row
+      .draggable.box(
+        v-if="moveMode"
+        v-for="(block, blockIndex) in blockState"
+        draggable="true"
+        :class="{over: dragEnterBlockIndex === blockIndex, moveActive: moveMode}"
+        @dragstart="dragstart($event, blockIndex)"
+        @dragend="dragend($event)"
+        @dragover.prevent="dragover($event)"
+        @dragenter.prevent="dragenter($event, blockIndex)"
+        @drop="drop(blockIndex)"
       )
-        .content PRO
+        BlocksWrap(
+          :block="block"
+          :blockIndex="blockIndex"
+        )
+          .content PRO
 
-  .btn-wrap
-    button.btn-reset.btn(
-      @click="addBlock(0)"
-    ) Add Content Block
-    button.btn-reset.btn(
-      @click="addBlock(1)"
-    ) Add Cards Block
-    button.btn-reset.btn(
-      @click="addBlock(2)"
-    ) Add Films Block
+      .draggable.box(
+        v-if="!moveMode"
+        v-for="(block, blockIndex) in blockState"
+      )
+        BlocksWrap(
+          :block="block"
+          :blockIndex="blockIndex"
+        )
+          .content PRO
+
+      .btn-wrap
+        button.btn-reset.btn(
+          @click="addBlock(0)"
+        ) Add Content Block
+        button.btn-reset.btn(
+          @click="addBlock(1)"
+        ) Add Cards Block
+        button.btn-reset.btn(
+          @click="addBlock(2)"
+        ) Add Films Block
 
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import BlockContent from './BlockContent.vue';
+import BlocksWrap from './BlocksWrap.vue';
 
 export default {
   name: 'HelloWorld',
-  components: { BlockContent },
+  components: { BlocksWrap },
   data() {
     return {
       dragBlockIndex: '',
+      dragEnterBlockIndex: '',
       reRender: 0,
+      moveMode: false,
       defaultBlocks: [
         {
           id: 0,
@@ -53,6 +71,24 @@ export default {
           id: 1,
           header: 'Cards',
           text: 'Some text.',
+          cards: [
+            {
+              cardHeader: 'Card header 1',
+              cardText: 'Card text 1',
+            },
+            {
+              cardHeader: 'Card header 2',
+              cardText: 'Card text 2',
+            },
+            {
+              cardHeader: 'Card header 3',
+              cardText: 'Card text 3',
+            },
+            {
+              cardHeader: 'Card header 4',
+              cardText: 'Card text 4',
+            },
+          ],
         },
         {
           id: 2,
@@ -70,39 +106,33 @@ export default {
   methods: {
     ...mapActions(['updateBlocks']),
     // добавить новый блок
-    addBlock(index) {
-      this.blockState.push(this.defaultBlocks[index]);
+    addBlock(blockIndex) {
+      this.blockState.push(this.defaultBlocks[blockIndex]);
       this.updateBlocks(this.blockState);
     },
     // пользователь начинает перетаскивание элемента
-    dragstart(e, index) {
+    dragstart(e, blockIndex) {
       e.target.style.opacity = 0.5;
       e.dataTransfer.effectAllowed = 'move';
-      this.dragBlockIndex = index;
-      return index;
+      this.dragBlockIndex = blockIndex;
+      return blockIndex;
     },
     // перетаскиваемый элемент достигает конечного элемента
-    dragenter(e) {
-      e.target.classList.add('over');
+    dragenter(e, i) {
+      this.dragEnterBlockIndex = i;
     },
     // курсор мыши наведен на элемент при перетаскивании
     dragover(e) {
       e.dataTransfer.dropEffect = 'move';
     },
-    // курсор мыши покидает пределы перетаскиваемого элемента
-    dragleave(e) {
-      e.target.classList.remove('over');
-    },
     // происходит drop элемента
-    drop(index) {
+    drop(blockIndex) {
       const blocks = this.blockState;
-      [blocks[this.dragBlockIndex], blocks[index]] = [blocks[index], blocks[this.dragBlockIndex]];
-
-      // экшн вызовет мутацию и перезапишет state
+      // eslint-disable-next-line max-len
+      [blocks[this.dragBlockIndex], blocks[blockIndex]] = [blocks[blockIndex], blocks[this.dragBlockIndex]];
+      this.dragEnterBlockIndex = '';
       this.updateBlocks(blocks);
       this.reRender += 1;
-
-      // }
     },
     // пользователь отпускает курсор мыши в процессе перетаскивания
     dragend(e) {
@@ -112,10 +142,14 @@ export default {
 };
 </script>
 
-<style lang="sass">
+<style scoped lang="sass">
 
-  .droppable:not(:last-child)
-    margin-bottom: 5px
+  .container
+    margin: 0 10px
+    margin-bottom: 10px
+
+  .blocks__header
+    margin-bottom: 10px
 
   .btn-wrap
     display: flex
@@ -131,15 +165,20 @@ export default {
     display: flex
     border: 1px solid #666
     border-radius: .5em
-    margin: 5px 10px
+    margin-bottom: 10px
     padding: 10px
+  .box.moveActive
     cursor: move
+    border-color: transparent
+    outline: 2px solid #ccc
+  .box.over
+    border-color: transparent
+    outline: 2px solid green
+
   .box > div
     width: 100%
 
-  .box.over
-    border: 1px dotted #666
-
   [draggable]
     user-select: none
+
 </style>
