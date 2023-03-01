@@ -27,7 +27,7 @@ div
       ) Add card
 
       button.btn-reset.btn.block__delete-btn(
-        @click="deleteBlock(blockIndex)"
+        @click="deleteBlock()"
         v-if="editMode"
       ) Delete block
 
@@ -50,7 +50,7 @@ div
             v-if="editMode"
           ) Img
           button.btn-reset.btn.card__delete-btn(
-            @click="deleteCard(blockIndex, cardIndex)"
+            @click="deleteCard(cardIndex)"
             v-if="editMode"
           ) X
 
@@ -86,11 +86,14 @@ export default {
   data() {
     return {
       editMode: false,
+      moveMode: false,
       editModeBtnText: 'Edit',
+
       currentBlockHeader: '',
       currentCardHeaders: [],
       currentCardTexts: [],
       currentCardImgs: [],
+
       defaultCard: {
         cardHeader: 'Card header',
         cardText: 'Card text',
@@ -138,14 +141,14 @@ export default {
         .forEach((x, i) => x.cardText = this.currentCardTexts[i]);
       this.updateBlocks(this.blockState);
     },
-    deleteBlock(blockIndex) {
+    deleteBlock() {
       const blocksArr = this.blockState;
-      blocksArr.splice(blockIndex, 1);
+      blocksArr.splice(this.blockIndex, 1);
       this.updateBlocks(blocksArr);
     },
-    deleteCard(blockIndex, cardIndex) {
+    deleteCard(cardIndex) {
       const blocksArr = this.blockState;
-      blocksArr[blockIndex].cards.splice(cardIndex, 1);
+      blocksArr[this.blockIndex].cards.splice(cardIndex, 1);
       this.updateBlocks(blocksArr);
       this.updateData();
     },
