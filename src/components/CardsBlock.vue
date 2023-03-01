@@ -3,7 +3,7 @@ div
 
   .modal(v-if="showModal")
     .modal__content
-      p Enter URL
+      p Enter URL image for {{ cardIdEdit + 1 }} cards
       input(
         type="text"
         @input="cardImgUrlInput = $event.target.value"
@@ -86,7 +86,6 @@ export default {
   data() {
     return {
       editMode: false,
-      moveMode: false,
       editModeBtnText: 'Edit',
 
       currentBlockHeader: '',
@@ -163,15 +162,20 @@ export default {
       this.cardIdEdit = cardIndex;
     },
     saveCardImgUrl() {
-      if (this.cardImgUrlInput !== '') {
+      const regex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+
+      if (regex.test(this.cardImgUrlInput)) {
         this.cardImgUrl = this.cardImgUrlInput;
 
         this.blockState[this.blockIndex].cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
 
         this.updateBlocks(this.blockState);
         this.updateData();
+
+        this.showModal = false;
+      } else {
+        alert('Invalid URL');
       }
-      this.showModal = false;
     },
     updateData() {
       this.currentBlockHeader = this.blockState[this.blockIndex].header;
