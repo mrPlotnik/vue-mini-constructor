@@ -73,24 +73,24 @@ export default {
           text: 'Some text.',
           cards: [
             {
-              cardHeader: 'Card header 1',
-              cardText: 'Card text 1',
-              cardImg: 'https://i.ibb.co/Pgwz1yx/1655205127-1-gas-kvas-com-p-nosorog-foto-zhivotnogo-1.jpg',
+              cardHeader: '1 card header',
+              cardText: 'Card text',
+              cardImg: 'img/01.jpg',
             },
             {
-              cardHeader: 'Card header 2',
-              cardText: 'Card text 2',
-              cardImg: 'https://zookakadu.ru/wp-content/uploads/c/d/5/cd5a47ec4ca47ec711a9e83ab1b53ae3.jpeg',
+              cardHeader: '2 card header ',
+              cardText: 'Card text',
+              cardImg: 'img/01.jpg',
             },
             {
-              cardHeader: 'Card header 3',
-              cardText: 'Card text 3',
-              cardImg: 'https://placepic.ru/wp-content/uploads/2019/06/s1200-6-6.jpg',
+              cardHeader: '3 card header',
+              cardText: 'Card text',
+              cardImg: 'img/01.jpg',
             },
             {
-              cardHeader: 'Card header 4',
-              cardText: 'Card text 4',
-              cardImg: 'https://celes.club/uploads/posts/2021-11/1637324642_43-celes-club-p-nosorogi-zhivotnie-krasivo-foto-51.jpg',
+              cardHeader: '4 card header',
+              cardText: 'Card text',
+              cardImg: 'img/01.jpg',
             },
           ],
         },
@@ -166,11 +166,7 @@ export default {
 
   .box
     display: flex
-    // border: 1px solid #aaa
-    // border-radius: .5em
     margin-bottom: 10px
-    // padding: 10px
-    background-color: #ddd
   .box.moveActive
     cursor: move
     border-color: transparent

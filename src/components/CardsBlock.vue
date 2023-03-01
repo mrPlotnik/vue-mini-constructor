@@ -220,6 +220,7 @@ export default {
 </script>
 
 <style scoped lang="sass">
+  @import '../styles/base/mixins.sass'
 
   .input,
   .textarea
@@ -253,7 +254,10 @@ export default {
     padding: 3px 5px
     border: 1px solid #000
     border-radius: 5px
-    background-color: #e6da9a
+    background-color: #fef257
+    +transition(background-color)
+    &:hover
+      background-color: #00c3d9
   .block__delete-btn
     padding: 2px 5px
     border: 1px solid #555
@@ -313,6 +317,7 @@ export default {
   .card__img
     height: inherit
     background-size: cover
+    background-position: center
   .card__descr
     display: flex
     flex-direction: column
