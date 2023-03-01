@@ -1,5 +1,18 @@
 <template lang="pug">
 div
+
+  .modal(v-if="showModal")
+    .modal__content
+      p Enter URL
+      input(
+        type="text"
+        @input="cardImgUrlInput = $event.target.value"
+      )
+      div
+        button(
+          @click="saveCardImgUrl()"
+        ) Save
+
   .block__top
 
     .block__top-btns
@@ -32,12 +45,19 @@ div
       .card__head
 
         .card__head-btns
+          button.btn-reset.btn.card__img-btn(
+            @click="showInputModal(blockIndex, cardIndex)"
+            v-if="editMode"
+          ) Img
           button.btn-reset.btn.card__delete-btn(
             @click="deleteCard(blockIndex, cardIndex)"
             v-if="editMode"
           ) X
 
-        img.card__img(src="img/01.jpg" alt="Aventador")
+        .card__img(
+          :style="{'background-image': `url(${currentCardImgs[cardIndex]})`}"
+          alt=""
+        )
 
       .card__body
 
@@ -70,10 +90,17 @@ export default {
       currentBlockHeader: '',
       currentCardHeaders: [],
       currentCardTexts: [],
+      currentCardImgs: [],
       defaultCard: {
         cardHeader: 'Card header',
         cardText: 'Card text',
+        cardImg: 'img/01.jpg',
       },
+
+      showModal: false,
+      cardIdEdit: '',
+      cardImgUrl: '',
+      cardImgUrlInput: '',
     };
   },
   computed: {
@@ -128,10 +155,25 @@ export default {
       this.updateBlocks(blocksArr);
       this.updateData();
     },
+    showInputModal(cardIndex) {
+      this.showModal = true;
+      this.cardIdEdit = cardIndex;
+    },
+    saveCardImgUrl() {
+      this.cardImgUrl = this.cardImgUrlInput;
+
+      this.blockState[this.blockIndex].cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
+
+      this.updateBlocks(this.blockState);
+      this.updateData();
+
+      this.showModal = false;
+    },
     updateData() {
       this.currentBlockHeader = this.blockState[this.blockIndex].header;
       this.currentCardHeaders = this.blockState[this.blockIndex].cards.map((x) => x.cardHeader);
       this.currentCardTexts = this.blockState[this.blockIndex].cards.map((x) => x.cardText);
+      this.currentCardImgs = this.blockState[this.blockIndex].cards.map((x) => x.cardImg);
     },
   },
   created() {
@@ -148,7 +190,8 @@ export default {
     width: 100%
     border: none
     // outline: 1px solid #2f4ab5
-    background-color: #a3dfdf
+    resize: none
+    background-color: #a3dfdf63
 
   .block__top
     display: flex
@@ -201,12 +244,20 @@ export default {
     padding: 20px
     background-color: #e1e1e1
   .card__head
+    position: relative
     display: flex
     flex-direction: column
+    height: 100px
   .card__head-btns
     display: flex
     justify-content: flex-end
     background-color: #e1e1e1
+  .card__img-btn
+    margin: 5px
+    padding: 0 5px
+    border: 1px solid #555
+    border-radius: 5px
+    background-color: #a9db73
   .card__delete-btn
     margin: 5px
     padding: 0 5px
@@ -214,6 +265,8 @@ export default {
     border-radius: 5px
     background-color: #e37676
   .card__img
+    height: inherit
+    background-size: cover
   .card__descr
     max-height: 200px
     margin-bottom: 10px
@@ -226,4 +279,42 @@ export default {
   .descr__title
     font-size: 0.9em
     line-height: 1.5em
+
+  .qwe
+    position: absolute
+    width: 100%
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+
+  .modal
+    position: absolute
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 100%
+    height: 100%
+    top: 0
+    left: 0
+    // background-color: #000
+    // opacity: 0.5
+    z-index: 1
+  .modal__content
+    width: 300px
+    padding: 10px
+    border-radius: 5px
+    background-color: #fff
+    p
+      margin-bottom: 5px
+    input
+      width: 100%
+      height: fit-content
+      margin-bottom: 5px
+      font-size: 10px
+      z-index: 2
+    div
+      display: flex
+      justify-content: flex-end
+
 </style>
