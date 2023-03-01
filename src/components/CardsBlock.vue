@@ -44,19 +44,23 @@ div
 
       .card__head
 
-        .card__head-btns(v-if="editMode")
+        .card__head-btns
           .card__arrow-btns-wrap
             button.btn-reset.btn.card__left-btn(
               @click="moveCardLeft(cardIndex)"
+              v-if="editMode"
             ) <
             button.btn-reset.btn.card__right-btn(
               @click="moveCardRight(cardIndex)"
+              v-if="editMode"
             ) >
           button.btn-reset.btn.card__img-btn(
             @click="showInputModal(cardIndex)"
+            v-if="editMode"
           ) Img
           button.btn-reset.btn.card__delete-btn(
             @click="deleteCard(cardIndex)"
+            v-if="editMode"
           ) X
 
         .card__img(
@@ -80,6 +84,15 @@ div
             v-if="editMode"
             v-model="currentCardTexts[cardIndex]"
           )
+
+    .card.card-plus(v-if="editMode")
+
+      .card-plus__body
+        .card-plus__img(
+          @click="addCard()"
+          alt="Plus"
+        )
+
 </template>
 
 <script>
@@ -218,6 +231,18 @@ export default {
 
 <style scoped lang="sass">
   @import '../styles/base/mixins.sass'
+
+  .card-plus
+    height: 250px
+  .card-plus__body
+    height: 100%
+  .card-plus__img
+    height: 100%
+    height: inherit
+    background-image: url("@/assets/plus.png")
+    background-size: 50%
+    background-position: center
+    background-repeat: no-repeat
 
   .input,
   .textarea
