@@ -46,7 +46,7 @@ div
 
         .card__head-btns
           button.btn-reset.btn.card__img-btn(
-            @click="showInputModal(blockIndex, cardIndex)"
+            @click="showInputModal(cardIndex)"
             v-if="editMode"
           ) Img
           button.btn-reset.btn.card__delete-btn(
@@ -71,7 +71,7 @@ div
           )
 
           p.card__text(v-if="!editMode") {{ card.cardText }}
-          textarea.input.block__text-input(
+          textarea.textarea.block__text-input(
             v-if="editMode"
             v-model="currentCardTexts[cardIndex]"
           )
@@ -160,13 +160,14 @@ export default {
       this.cardIdEdit = cardIndex;
     },
     saveCardImgUrl() {
-      this.cardImgUrl = this.cardImgUrlInput;
+      if (this.cardImgUrlInput !== '') {
+        this.cardImgUrl = this.cardImgUrlInput;
 
-      this.blockState[this.blockIndex].cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
+        this.blockState[this.blockIndex].cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
 
-      this.updateBlocks(this.blockState);
-      this.updateData();
-
+        this.updateBlocks(this.blockState);
+        this.updateData();
+      }
       this.showModal = false;
     },
     updateData() {
@@ -185,13 +186,15 @@ export default {
 
 <style scoped lang="sass">
 
-  .input
-    display: flex
+  .input,
+  .textarea
     width: 100%
     border: none
-    // outline: 1px solid #2f4ab5
     resize: none
-    background-color: #a3dfdf63
+    background-color: #aeaeae
+
+  .textarea
+    flex-basis: 100%
 
   .block__top
     display: flex
@@ -241,7 +244,7 @@ export default {
     flex-grow: 1
     justify-content: space-between
     height: 150px
-    padding: 20px
+    padding: 10px
     background-color: #e1e1e1
   .card__head
     position: relative
@@ -268,10 +271,12 @@ export default {
     height: inherit
     background-size: cover
   .card__descr
-    max-height: 200px
+    display: flex
+    flex-direction: column
+    height: 100%
     margin-bottom: 10px
     font-size: 0.85em
-    overflow: auto
+    overflow-x: hidden
   .card__descr > *:not(:last-child)
     margin-bottom: 5px
   .card__descr ul
