@@ -130,10 +130,9 @@ export default {
       e.dataTransfer.dropEffect = 'move';
     },
     // происходит drop элемента
-    drop(blockIndex) {
+    drop(i) {
       const blocks = this.blockState;
-      // eslint-disable-next-line max-len
-      [blocks[this.dragBlockIndex], blocks[blockIndex]] = [blocks[blockIndex], blocks[this.dragBlockIndex]];
+      [blocks[this.dragBlockIndex], blocks[i]] = [blocks[i], blocks[this.dragBlockIndex]];
       this.dragEnterBlockIndex = '';
       this.updateBlocks(blocks);
       this.reRender += 1;

@@ -45,6 +45,14 @@ div
       .card__head
 
         .card__head-btns
+          button.btn-reset.btn.card__left-btn(
+            @click="moveCardLeft(cardIndex)"
+            v-if="editMode"
+          ) <
+          button.btn-reset.btn.card__right-btn(
+            @click="moveCardRight(cardIndex)"
+            v-if="editMode"
+          ) >
           button.btn-reset.btn.card__img-btn(
             @click="showInputModal(cardIndex)"
             v-if="editMode"
@@ -177,6 +185,27 @@ export default {
         alert('Invalid URL');
       }
     },
+    moveCardLeft(i) {
+      const bs = this.blockState;
+      const bi = this.blockIndex;
+
+      if (i !== 0) {
+        [bs[bi].cards[i], bs[bi].cards[i - 1]] = [bs[bi].cards[i - 1], bs[bi].cards[i]];
+        this.updateBlocks(bs);
+        this.updateData();
+      }
+    },
+    moveCardRight(i) {
+      const bs = this.blockState;
+      const bi = this.blockIndex;
+      const len = bs[bi].cards.length;
+
+      if (i !== len - 1) {
+        [bs[bi].cards[i], bs[bi].cards[i + 1]] = [bs[bi].cards[i + 1], bs[bi].cards[i]];
+        this.updateBlocks(bs);
+        this.updateData();
+      }
+    },
     updateData() {
       this.currentBlockHeader = this.blockState[this.blockIndex].header;
       this.currentCardHeaders = this.blockState[this.blockIndex].cards.map((x) => x.cardHeader);
@@ -187,7 +216,6 @@ export default {
   created() {
     this.updateData();
   },
-
 };
 </script>
 
@@ -258,10 +286,18 @@ export default {
     display: flex
     flex-direction: column
     height: 100px
+
   .card__head-btns
     display: flex
     justify-content: flex-end
     background-color: #e1e1e1
+  .card__left-btn,
+  .card__right-btn
+    margin: 5px
+    padding: 0 5px
+    border: 1px solid #555
+    border-radius: 5px
+    background-color: #e6da9a
   .card__img-btn
     margin: 5px
     padding: 0 5px
