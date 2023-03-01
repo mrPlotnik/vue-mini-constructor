@@ -44,22 +44,19 @@ div
 
       .card__head
 
-        .card__head-btns
-          button.btn-reset.btn.card__left-btn(
-            @click="moveCardLeft(cardIndex)"
-            v-if="editMode"
-          ) <
-          button.btn-reset.btn.card__right-btn(
-            @click="moveCardRight(cardIndex)"
-            v-if="editMode"
-          ) >
+        .card__head-btns(v-if="editMode")
+          .card__arrow-btns-wrap
+            button.btn-reset.btn.card__left-btn(
+              @click="moveCardLeft(cardIndex)"
+            ) <
+            button.btn-reset.btn.card__right-btn(
+              @click="moveCardRight(cardIndex)"
+            ) >
           button.btn-reset.btn.card__img-btn(
             @click="showInputModal(cardIndex)"
-            v-if="editMode"
           ) Img
           button.btn-reset.btn.card__delete-btn(
             @click="deleteCard(cardIndex)"
-            v-if="editMode"
           ) X
 
         .card__img(
@@ -292,28 +289,42 @@ export default {
     height: 100px
 
   .card__head-btns
+    position: absolute
     display: flex
-    justify-content: flex-end
-    background-color: #e1e1e1
+    justify-content: space-between
+    align-items: center
+    width: 100%
+    padding: 5px
+    background-color: #fff6
+  .card__arrow-btns-wrap
+    display: flex
+    align-items: center
   .card__left-btn,
   .card__right-btn
-    margin: 5px
     padding: 0 5px
     border: 1px solid #555
     border-radius: 5px
-    background-color: #e6da9a
+    // background-color: #e6da9a
+    +transition(background-color)
+    &:hover
+      background-color: #00c3d9
   .card__img-btn
-    margin: 5px
     padding: 0 5px
     border: 1px solid #555
     border-radius: 5px
-    background-color: #a9db73
+    // background-color: #a9db73
+    +transition(background-color)
+    &:hover
+      background-color: #00c3d9
   .card__delete-btn
-    margin: 5px
     padding: 0 5px
     border: 1px solid #555
     border-radius: 5px
     background-color: #e37676
+    +transition(background-color)
+    &:hover
+      background-color: #e63d3d
+
   .card__img
     height: inherit
     background-size: cover
