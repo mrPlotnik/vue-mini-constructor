@@ -128,25 +128,25 @@ export default {
         this.saveBlockHeader();
         this.saveCardHeader();
         this.saveCardText();
+
+        this.updateBlocks(this.blockState);
+
         this.editModeBtnText = 'Edit';
         this.editMode = false;
       }
     },
     saveBlockHeader() {
       this.blockState[this.blockIndex].header = this.currentBlockHeader;
-      this.updateBlocks(this.blockState);
     },
     saveCardHeader() {
       this.blockState[this.blockIndex].cards
         // eslint-disable-next-line no-return-assign, no-param-reassign
         .forEach((x, i) => x.cardHeader = this.currentCardHeaders[i]);
-      this.updateBlocks(this.blockState);
     },
     saveCardText() {
       this.blockState[this.blockIndex].cards
         // eslint-disable-next-line no-return-assign, no-param-reassign
         .forEach((x, i) => x.cardText = this.currentCardTexts[i]);
-      this.updateBlocks(this.blockState);
     },
     deleteBlock() {
       const blocksArr = this.blockState;
