@@ -21,11 +21,6 @@ div
         @click="editModeF()"
       ) {{ editModeBtnText }}
 
-      button.btn-reset.btn.block__add-btn(
-        v-if="editMode"
-        @click="addCard()"
-      ) Add card
-
       button.btn-reset.btn.block__delete-btn(
         @click="deleteBlock()"
         v-if="editMode"
@@ -35,7 +30,7 @@ div
     input.input.block__top-header-input(
       v-if="editMode"
       type="text"
-      v-model="currentBlockHeader"
+      v-model="thisBlock.header"
     )
 
   .block__body
@@ -44,19 +39,16 @@ div
 
       .card__head
 
-        .card__head-btns
+        .card__head-btns(v-if="editMode")
           .card__arrow-btns-wrap
             button.btn-reset.btn.card__left-btn(
               @click="moveCardLeft(cardIndex)"
-              v-if="editMode"
             ) <
             button.btn-reset.btn.card__right-btn(
               @click="moveCardRight(cardIndex)"
-              v-if="editMode"
             ) >
           button.btn-reset.btn.card__img-btn(
             @click="showInputModal(cardIndex)"
-            v-if="editMode"
           ) Img
           button.btn-reset.btn.card__delete-btn(
             @click="deleteCard(cardIndex)"
@@ -103,6 +95,8 @@ export default {
   props: ['block', 'blockIndex'],
   data() {
     return {
+      thisBlock: [],
+
       editMode: false,
       editModeBtnText: 'Edit',
 
@@ -125,11 +119,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      blockState: 'blockInfo',
+      blocksState: 'blockInfo',
     }),
   },
   methods: {
-    ...mapActions(['updateBlocks']),
+    ...mapActions(['updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editModeBtnText = 'Apply';
@@ -139,40 +133,47 @@ export default {
         this.saveCardHeader();
         this.saveCardText();
 
-        this.updateBlocks(this.blockState);
+        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
 
         this.editModeBtnText = 'Edit';
         this.editMode = false;
       }
     },
     saveBlockHeader() {
-      this.blockState[this.blockIndex].header = this.currentBlockHeader;
+      if (this.thisBlock.header === '') {
+        this.thisBlock.header = this.currentBlockHeader;
+      }
     },
     saveCardHeader() {
-      this.blockState[this.blockIndex].cards
-        // eslint-disable-next-line no-return-assign, no-param-reassign
-        .forEach((x, i) => x.cardHeader = this.currentCardHeaders[i]);
+      this.thisBlock.cards
+        .forEach((x, i) => {
+          if (this.currentCardHeaders[i] !== '') {
+            // eslint-disable-next-line no-return-assign, no-param-reassign
+            x.cardHeader = this.currentCardHeaders[i];
+          }
+        });
     },
     saveCardText() {
-      this.blockState[this.blockIndex].cards
-        // eslint-disable-next-line no-return-assign, no-param-reassign
-        .forEach((x, i) => x.cardText = this.currentCardTexts[i]);
+      this.thisBlock.cards
+        .forEach((x, i) => {
+          if (this.currentCardTexts[i] !== '') {
+            // eslint-disable-next-line no-return-assign, no-param-reassign
+            x.cardText = this.currentCardTexts[i];
+          }
+        });
     },
     deleteBlock() {
-      const blocksArr = this.blockState;
-      blocksArr.splice(this.blockIndex, 1);
-      this.updateBlocks(blocksArr);
+      this.thisBlock.splice(this.blockIndex, 1);
+      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
     },
     deleteCard(cardIndex) {
-      const blocksArr = this.blockState;
-      blocksArr[this.blockIndex].cards.splice(cardIndex, 1);
-      this.updateBlocks(blocksArr);
+      this.thisBlock.cards.splice(cardIndex, 1);
+      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
       this.updateData();
     },
     addCard() {
-      const blocksArr = this.blockState;
-      blocksArr[this.blockIndex].cards.push(this.defaultCard);
-      this.updateBlocks(blocksArr);
+      this.thisBlock.cards.push(this.defaultCard);
+      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
       this.updateData();
     },
     showInputModal(cardIndex) {
@@ -185,9 +186,9 @@ export default {
       if (regex.test(this.cardImgUrlInput)) {
         this.cardImgUrl = this.cardImgUrlInput;
 
-        this.blockState[this.blockIndex].cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
+        this.thisBlock.cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
 
-        this.updateBlocks(this.blockState);
+        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
         this.updateData();
 
         this.showModal = false;
@@ -196,31 +197,30 @@ export default {
       }
     },
     moveCardLeft(i) {
-      const bs = this.blockState;
-      const bi = this.blockIndex;
+      const bs = this.thisBlock;
 
       if (i !== 0) {
-        [bs[bi].cards[i], bs[bi].cards[i - 1]] = [bs[bi].cards[i - 1], bs[bi].cards[i]];
-        this.updateBlocks(bs);
+        [bs.cards[i], bs.cards[i - 1]] = [bs.cards[i - 1], bs.cards[i]];
+        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
         this.updateData();
       }
     },
     moveCardRight(i) {
-      const bs = this.blockState;
-      const bi = this.blockIndex;
-      const len = bs[bi].cards.length;
+      const bs = this.thisBlock;
+      const len = bs.cards.length;
 
       if (i !== len - 1) {
-        [bs[bi].cards[i], bs[bi].cards[i + 1]] = [bs[bi].cards[i + 1], bs[bi].cards[i]];
-        this.updateBlocks(bs);
+        [bs.cards[i], bs.cards[i + 1]] = [bs.cards[i + 1], bs.cards[i]];
+        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
         this.updateData();
       }
     },
     updateData() {
-      this.currentBlockHeader = this.blockState[this.blockIndex].header;
-      this.currentCardHeaders = this.blockState[this.blockIndex].cards.map((x) => x.cardHeader);
-      this.currentCardTexts = this.blockState[this.blockIndex].cards.map((x) => x.cardText);
-      this.currentCardImgs = this.blockState[this.blockIndex].cards.map((x) => x.cardImg);
+      this.thisBlock = this.blocksState[this.blockIndex];
+      this.currentBlockHeader = this.thisBlock.header;
+      this.currentCardHeaders = this.thisBlock.cards.map((x) => x.cardHeader);
+      this.currentCardTexts = this.thisBlock.cards.map((x) => x.cardText);
+      this.currentCardImgs = this.thisBlock.cards.map((x) => x.cardImg);
     },
   },
   created() {
@@ -239,10 +239,15 @@ export default {
   .card-plus__img
     height: 100%
     height: inherit
+    cursor: pointer
     background-image: url("@/assets/plus.png")
     background-size: 50%
     background-position: center
     background-repeat: no-repeat
+    background-color: #e1e1e1
+    +transition(background-size)
+    &:hover
+      background-size: 55%
 
   .input,
   .textarea
@@ -285,11 +290,9 @@ export default {
     border: 1px solid #555
     border-radius: 5px
     background-color: #e37676
-  .block__add-btn
-    padding: 2px 5px
-    border: 1px solid #555
-    border-radius: 5px
-    background-color: #a9db73
+    +transition(background-color)
+    &:hover
+      background-color: #e63d3d
 
   .card
     display: flex
@@ -311,7 +314,7 @@ export default {
     position: relative
     display: flex
     flex-direction: column
-    height: 100px
+    height: 150px
 
   .card__head-btns
     position: absolute

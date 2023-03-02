@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import ContentBlock from '@/components/ContentBlock.vue';
 import CardsBlock from '@/components/CardsBlock.vue';
 
@@ -51,14 +50,8 @@ export default {
   data() {
     return {};
   },
-  computed: {
-    ...mapGetters({
-      blockState: 'blockInfo',
-    }),
-  },
-  methods: {
-    ...mapActions(['updateBlocks']),
-  },
+  computed: {},
+  methods: {},
 };
 
 </script>
