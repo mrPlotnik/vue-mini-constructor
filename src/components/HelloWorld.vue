@@ -1,7 +1,7 @@
 <template lang="pug">
 
 main
- .container.blocks(:key="reRender")
+ .blocks(:key="reRender")
     .row
       div.blocks__header
         button.btn-reset.btn.block__edit-btn(
@@ -70,7 +70,6 @@ export default {
         {
           id: 1,
           header: 'Cards',
-          text: 'Some text.',
           cards: [
             {
               cardHeader: '1 card header',
@@ -96,8 +95,8 @@ export default {
         },
         {
           id: 2,
-          header: 'Films',
-          text: 'Some text.',
+          header: 'Movies',
+          movies: [],
         },
       ],
     };
@@ -147,10 +146,6 @@ export default {
 
 <style scoped lang="sass">
 
-  .container
-    margin: 0 10px
-    margin-bottom: 10px
-
   .blocks__header
     margin-bottom: 10px
 
@@ -166,7 +161,6 @@ export default {
 
   .box
     display: flex
-    margin-bottom: 10px
   .box.moveActive
     cursor: move
     border-color: transparent

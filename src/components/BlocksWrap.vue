@@ -15,38 +15,22 @@
       :blockIndex="blockIndex"
     )
   //- Films
-  div(v-if="block.id === 2")
-    .wrap
-      h2 {{ block.title }}
-      button.btn-reset.btn(
-        @click="deleteBlock(index)"
-      ) Delete
-
-    .input-wrap
-      p(
-        v-show="!editMode"
-      ) {{ block.text }}
-
-      input.input(
-        type="text"
-        v-model="currentText"
-        v-show="editMode"
-      )
-
-      button.btn-reset.btn(
-        @click="editText()"
-      ) {{ textEditButton }}
-
+  .block(v-if="block.id === 2")
+    MovieBlock(
+      :block="block"
+      :blockIndex="blockIndex"
+    )
 </template>
 
 <script>
 import ContentBlock from '@/components/ContentBlock.vue';
 import CardsBlock from '@/components/CardsBlock.vue';
+import MovieBlock from './MovieBlock.vue';
 
 export default {
   name: 'BlocksWrap',
   props: ['block', 'blockIndex'],
-  components: { ContentBlock, CardsBlock },
+  components: { ContentBlock, CardsBlock, MovieBlock },
   data() {
     return {};
   },

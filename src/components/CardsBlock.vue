@@ -1,89 +1,90 @@
 <template lang="pug">
-div
+#cards
+  .container
 
-  .modal(v-if="showModal")
-    .modal__content
-      p Enter URL image for {{ cardIdEdit + 1 }} cards
-      input(
-        type="text"
-        @input="cardImgUrlInput = $event.target.value"
-      )
-      div
-        button(
-          @click="saveCardImgUrl()"
-        ) Save
+    .modal(v-if="showModal")
+      .modal__content
+        p Enter URL image for {{ cardIdEdit + 1 }} cards
+        input(
+          type="text"
+          @input="cardImgUrlInput = $event.target.value"
+        )
+        div
+          button(
+            @click="saveCardImgUrl()"
+          ) Save
 
-  .block__top
+    .block__top
 
-    .block__top-btns
-      button.btn-reset.btn.block__edit-btn(
-        :class="{isActive: editMode}"
-        @click="editModeF()"
-      ) {{ editModeBtnText }}
+      .block__top-btns
+        button.btn-reset.btn.block__edit-btn(
+          :class="{isActive: editMode}"
+          @click="editModeF()"
+        ) {{ editModeBtnText }}
 
-      button.btn-reset.btn.block__delete-btn(
-        @click="deleteBlock()"
+        button.btn-reset.btn.block__delete-btn(
+          @click="deleteBlock()"
+          v-if="editMode"
+        ) Delete block
+
+      h2.block__top-header(v-if="!editMode" ) {{ block.header }}
+      input.input.block__top-header-input(
         v-if="editMode"
-      ) Delete block
+        type="text"
+        v-model="thisBlock.header"
+      )
 
-    h2.block__top-header(v-if="!editMode" ) {{ block.header }}
-    input.input.block__top-header-input(
-      v-if="editMode"
-      type="text"
-      v-model="thisBlock.header"
-    )
+    .block__body
 
-  .block__body
+      .card(v-for="(card, cardIndex) in block.cards")
 
-    .card(v-for="(card, cardIndex) in block.cards")
+        .card__head
 
-      .card__head
+          .card__head-btns(v-if="editMode")
+            .card__arrow-btns-wrap
+              button.btn-reset.btn.card__left-btn(
+                @click="moveCardLeft(cardIndex)"
+              ) <
+              button.btn-reset.btn.card__right-btn(
+                @click="moveCardRight(cardIndex)"
+              ) >
+            button.btn-reset.btn.card__img-btn(
+              @click="showInputModal(cardIndex)"
+            ) Img
+            button.btn-reset.btn.card__delete-btn(
+              @click="deleteCard(cardIndex)"
+              v-if="editMode"
+            ) X
 
-        .card__head-btns(v-if="editMode")
-          .card__arrow-btns-wrap
-            button.btn-reset.btn.card__left-btn(
-              @click="moveCardLeft(cardIndex)"
-            ) <
-            button.btn-reset.btn.card__right-btn(
-              @click="moveCardRight(cardIndex)"
-            ) >
-          button.btn-reset.btn.card__img-btn(
-            @click="showInputModal(cardIndex)"
-          ) Img
-          button.btn-reset.btn.card__delete-btn(
-            @click="deleteCard(cardIndex)"
-            v-if="editMode"
-          ) X
-
-        .card__img(
-          :style="{'background-image': `url(${currentCardImgs[cardIndex]})`}"
-          alt=""
-        )
-
-      .card__body
-
-        .card__descr
-
-          h3(v-if="!editMode" ) {{ card.cardHeader }}
-          input.input.block__header-input(
-            v-if="editMode"
-            type="text"
-            v-model="currentCardHeaders[cardIndex]"
+          .card__img(
+            :style="{'background-image': `url(${currentCardImgs[cardIndex]})`}"
+            alt=""
           )
 
-          p.card__text(v-if="!editMode") {{ card.cardText }}
-          textarea.textarea.block__text-input(
-            v-if="editMode"
-            v-model="currentCardTexts[cardIndex]"
+        .card__body
+
+          .card__descr
+
+            h3(v-if="!editMode" ) {{ card.cardHeader }}
+            input.input.block__header-input(
+              v-if="editMode"
+              type="text"
+              v-model="currentCardHeaders[cardIndex]"
+            )
+
+            p.card__text(v-if="!editMode") {{ card.cardText }}
+            textarea.textarea.block__text-input(
+              v-if="editMode"
+              v-model="currentCardTexts[cardIndex]"
+            )
+
+      .card.card-plus(v-if="editMode")
+
+        .card-plus__body
+          .card-plus__img(
+            @click="addCard()"
+            alt="Plus"
           )
-
-    .card.card-plus(v-if="editMode")
-
-      .card-plus__body
-        .card-plus__img(
-          @click="addCard()"
-          alt="Plus"
-        )
 
 </template>
 
@@ -108,7 +109,7 @@ export default {
       defaultCard: {
         cardHeader: 'Card header',
         cardText: 'Card text',
-        cardImg: '@/assets/01.jpg',
+        cardImg: 'img/01.jpg',
       },
 
       showModal: false,
@@ -123,7 +124,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['updateBlock']),
+    ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editModeBtnText = 'Apply';
@@ -163,8 +164,8 @@ export default {
         });
     },
     deleteBlock() {
-      this.thisBlock.splice(this.blockIndex, 1);
-      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
+      this.blocksState.splice(this.blockIndex, 1);
+      this.updateBlocks(this.blocksState);
     },
     deleteCard(cardIndex) {
       this.thisBlock.cards.splice(cardIndex, 1);
@@ -232,6 +233,14 @@ export default {
 <style scoped lang="sass">
   @import '../styles/base/mixins.sass'
 
+  #card
+    background-color: #444
+    padding: 10px
+    padding-bottom: 20px
+
+  .container
+    max-width: 1024px
+
   .card-plus
     height: 250px
   .card-plus__body
@@ -262,6 +271,8 @@ export default {
   .block__top
     display: flex
     flex-direction: column
+    h2
+      color: #fff
   .block__top-btns
     display: flex
     justify-content: flex-end
