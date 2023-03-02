@@ -108,7 +108,7 @@ export default {
       defaultCard: {
         cardHeader: 'Card header',
         cardText: 'Card text',
-        cardImg: 'img/01.jpg',
+        cardImg: '@/assets/01.jpg',
       },
 
       showModal: false,
