@@ -23,7 +23,16 @@
 
     .block__body
 
-      .card(v-for="(movie, movieIndex) in thisBlock.movies")
+      .loading(v-if="isLoading === true") Loading...
+
+      .error(v-else-if="isError === true")
+        h2 Use VPN
+        button(@click="loadMovies(blockIndex)") Try again
+
+      .card(
+        v-else
+        v-for="(movie, movieIndex) in thisBlock.movies"
+      )
         .card__head
           .card__img(
             :style="{'background-image': `url(${movie.poster_path})`}"
@@ -36,6 +45,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import axios from 'axios';
 
 export default {
   name: 'MovieBlock',
@@ -43,6 +53,8 @@ export default {
   data() {
     return {
       thisBlock: [],
+      isLoading: true,
+      isError: false,
 
       editMode: false,
       editModeBtnText: 'Edit',
@@ -56,7 +68,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['updateBlocks', 'updateBlock', 'loadMovie']),
+    ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editModeBtnText = 'Apply';
@@ -83,9 +95,36 @@ export default {
       this.thisBlock = this.blocksState[this.blockIndex];
       this.currentBlockHeader = this.thisBlock.header;
     },
+    loadMovies(blockIndex) {
+      return axios
+        .get('https://api.themoviedb.org/3/movie/popular', {
+          params: {
+            api_key: 'c645acdf2e5fdf61fd0544322ae288ed',
+          },
+        })
+        .then((response) => {
+          const resp = response.data.results;
+          const arr = [];
+          resp.forEach((x) => {
+            const obj = {};
+            obj.id = x.id;
+            obj.title = x.title;
+            obj.poster_path = `https://www.themoviedb.org/t/p/w220_and_h330_face/${x.poster_path}`;
+            obj.average = x.vote_average * 10;
+            arr.push(obj);
+          });
+          this.$store.dispatch('loadMovies', { blockId: blockIndex, block: arr });
+          this.isLoading = false;
+          this.isError = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.isError = true;
+        });
+    },
   },
   created() {
-    this.loadMovie(this.blockIndex);
+    this.loadMovies(this.blockIndex);
     this.updateData();
   },
 };
