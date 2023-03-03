@@ -1,38 +1,52 @@
 <template lang="pug">
 #cards
-  .container
 
-    .modal(v-if="showModal")
-      .modal__content
-        p Enter URL image for {{ cardIdEdit + 1 }} cards
-        input(
-          type="text"
-          @input="cardImgUrlInput = $event.target.value"
-        )
-        div
-          button(
-            @click="saveCardImgUrl()"
-          ) Save
+  .modal(v-if="showModal")
+    .modal-wrap
+    .modal__content
+      p Enter URL image for {{ cardIdEdit + 1 }} cards
+      input(
+        type="text"
+        @input="cardImgUrlInput = $event.target.value"
+      )
+      div
+        button.btn-reset.btn.btn--edit(
+          @click="saveCardImgUrl()"
+        ) Save
+
+  .container
 
     .block__top
 
+      .block__header
+        h2.block__top-header(v-if="!editMode" ) {{ block.header }}
+        input.input.block__top-header-input(
+          v-if="editMode"
+          type="text"
+          v-model="thisBlock.header"
+        )
+
       .block__top-btns
-        button.btn-reset.btn.block__edit-btn(
+        div(v-if="editMode")
+          button.btn-reset.btn.btn--edit(
+            :class="{isActive: editMode}"
+            @click="moveBlockUp(blockIndex)"
+          ) Up
+          button.btn-reset.btn.btn--edit(
+            :class="{isActive: editMode}"
+            @click="moveBlockDown(blockIndex)"
+          ) Down
+
+        button.btn-reset.btn.btn--edit(
           :class="{isActive: editMode}"
           @click="editModeF()"
         ) {{ editModeBtnText }}
 
-        button.btn-reset.btn.block__delete-btn(
-          @click="deleteBlock()"
-          v-if="editMode"
-        ) Delete block
-
-      h2.block__top-header(v-if="!editMode" ) {{ block.header }}
-      input.input.block__top-header-input(
-        v-if="editMode"
-        type="text"
-        v-model="thisBlock.header"
-      )
+        div
+          button.btn-reset.btn.btn--delete(
+            @click="deleteBlock()"
+            v-if="editMode"
+          ) Delete block
 
     .block__body
 
@@ -42,16 +56,16 @@
 
           .card__head-btns(v-if="editMode")
             .card__arrow-btns-wrap
-              button.btn-reset.btn.card__left-btn(
+              button.btn-reset.btn.btn--edit(
                 @click="moveCardLeft(cardIndex)"
               ) <
-              button.btn-reset.btn.card__right-btn(
+              button.btn-reset.btn.btn--edit(
                 @click="moveCardRight(cardIndex)"
               ) >
-            button.btn-reset.btn.card__img-btn(
+            button.btn-reset.btn.btn--edit(
               @click="showInputModal(cardIndex)"
             ) Img
-            button.btn-reset.btn.card__delete-btn(
+            button.btn-reset.btn.btn--delete(
               @click="deleteCard(cardIndex)"
               v-if="editMode"
             ) X
@@ -79,13 +93,10 @@
             )
 
       .card.card-plus(v-if="editMode")
-
-        .card-plus__body
-          .card-plus__img(
-            @click="addCard()"
-            alt="Plus"
-          )
-
+        .card-plus__img(
+          @click="addCard()"
+          alt="Plus"
+        )
 </template>
 
 <script>
@@ -154,6 +165,25 @@ export default {
           }
         });
     },
+    moveBlockUp(i) {
+      const bs = this.blocksState;
+
+      if (i !== 0) {
+        const qwe = bs.slice(0);
+        [qwe[i], qwe[i - 1]] = [qwe[i - 1], qwe[i]];
+        this.updateBlocks(qwe);
+      }
+    },
+    moveBlockDown(i) {
+      const bs = this.blocksState;
+      const len = bs.length;
+
+      if (i !== len - 1) {
+        const qwe = bs.slice(0);
+        [qwe[i], qwe[i + 1]] = [qwe[i + 1], qwe[i]];
+        this.updateBlocks(qwe);
+      }
+    },
     saveCardText() {
       this.thisBlock.cards
         .forEach((x, i) => {
@@ -194,7 +224,8 @@ export default {
 
         this.showModal = false;
       } else {
-        alert('Invalid URL');
+        // alert('Invalid URL');
+        this.showModal = false;
       }
     },
     moveCardLeft(i) {
@@ -231,193 +262,157 @@ export default {
 </script>
 
 <style scoped lang="sass">
-  @import '../styles/base/mixins.sass'
+@import '../styles/base/mixins.sass'
 
-  #card
-    background-color: #444
-    padding: 10px
-    padding-bottom: 20px
+#cards
+  position: relative
+  padding: 20px 0
+  background-color: #444
 
-  .container
-    max-width: 1024px
+.container
+  max-width: 1024px
 
-  .card-plus
-    height: 250px
-  .card-plus__body
-    height: 100%
-  .card-plus__img
-    height: 100%
-    height: inherit
-    cursor: pointer
-    background-image: url("@/assets/plus.png")
-    background-size: 50%
-    background-position: center
-    background-repeat: no-repeat
-    background-color: #e1e1e1
-    +transition(background-size)
-    &:hover
-      background-size: 55%
+.card-plus
+  height: 300px
+.card-plus__img
+  height: 100%
+  height: inherit
+  cursor: pointer
+  background-image: url("@/assets/plus.png")
+  background-size: 50%
+  background-position: center
+  background-repeat: no-repeat
+  background-color: #e1e1e1
+  +transition(background-size)
+  &:hover
+    background-size: 55%
 
-  .input,
-  .textarea
+.input,
+.textarea
+  width: 100%
+  margin-right: 10px
+  border: none
+  resize: none
+  background-color: #aeaeae
+
+.textarea
+  flex-basis: 100%
+
+.block__top
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-bottom: 10px
+  h2
+    color: #fff
+.block__header
+  width: 100%
+  margin-right: 10px
+  input
+    margin-bottom: 0
+.block__top-btns
+  display: flex
+  justify-content: flex-end
+  flex-shrink: 0
+
+.block__top-header,
+.block__top-header-input
+  margin-bottom: 10px
+  font-weight: 600
+  font-size: 20px
+
+.block__body
+  display: flex
+  flex-wrap: wrap
+  justify-content: flex-start
+
+.card
+  display: flex
+  flex-direction: column
+  flex-basis: calc(25% - 8px)
+  margin-bottom: 10px
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
+.card:not(:nth-child(4n))
+  margin-right: 10px
+.card__body
+  display: flex
+  flex-direction: column
+  flex-grow: 1
+  justify-content: space-between
+  height: 150px
+  padding: 10px
+  background-color: #e1e1e1
+
+.card__head
+  position: relative
+  display: flex
+  flex-direction: column
+  height: 150px
+.card__head-btns
+  position: absolute
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+  padding: 5px
+  background-color: #fff6
+  .btn--edit
+    padding: 0 5px
+  .btn--delete
+    padding: 0 5px
+.card__arrow-btns-wrap
+  display: flex
+  align-items: center
+
+.card__img
+  height: inherit
+  background-size: cover
+  background-position: center
+.card__descr
+  display: flex
+  flex-direction: column
+  height: 100%
+  margin-bottom: 10px
+  font-size: 0.85em
+  overflow-x: hidden
+.card__descr > *:not(:last-child)
+  margin-bottom: 5px
+.card__descr ul
+  padding-left: 15px
+.descr__title
+  font-size: 0.9em
+  line-height: 1.5em
+
+.modal-wrap
+  position: absolute
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  opacity: 0.5
+  background-color: #000
+  z-index: 1
+.modal__content
+  position: absolute
+  width: 300px
+  top:50%
+  left:50%
+  transform: translate(-50%, -50%)
+  padding: 10px
+  border-radius: 5px
+  background-color: #fff
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
+  z-index: 2
+  p
+    margin-bottom: 5px
+  input
     width: 100%
-    border: none
-    resize: none
-    background-color: #aeaeae
-
-  .textarea
-    flex-basis: 100%
-
-  .block__top
-    display: flex
-    flex-direction: column
-    h2
-      color: #fff
-  .block__top-btns
+    height: fit-content
+    margin-bottom: 10px
+    font-size: 10px
+    z-index: 2
+  div
     display: flex
     justify-content: flex-end
-    margin-bottom: 10px
-  .block__top-header,
-  .block__top-header-input
-    margin-bottom: 10px
-    font-weight: 600
-    font-size: 20px
-
-  .block__body
-    display: flex
-    flex-wrap: wrap
-    justify-content: flex-start
-
-  .block__edit-btn
-    padding: 3px 5px
-    border: 1px solid #000
-    border-radius: 5px
-    background-color: #fef257
-    +transition(background-color)
-    &:hover
-      background-color: #00c3d9
-  .block__delete-btn
-    padding: 2px 5px
-    border: 1px solid #555
-    border-radius: 5px
-    background-color: #e37676
-    +transition(background-color)
-    &:hover
-      background-color: #e63d3d
-
-  .card
-    display: flex
-    flex-direction: column
-    flex-basis: calc(25% - 8px)
-    margin-bottom: 10px
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
-  .card:not(:nth-child(4n))
-    margin-right: 10px
-  .card__body
-    display: flex
-    flex-direction: column
-    flex-grow: 1
-    justify-content: space-between
-    height: 150px
-    padding: 10px
-    background-color: #e1e1e1
-  .card__head
-    position: relative
-    display: flex
-    flex-direction: column
-    height: 150px
-
-  .card__head-btns
-    position: absolute
-    display: flex
-    justify-content: space-between
-    align-items: center
-    width: 100%
-    padding: 5px
-    background-color: #fff6
-  .card__arrow-btns-wrap
-    display: flex
-    align-items: center
-  .card__left-btn,
-  .card__right-btn
-    padding: 0 5px
-    border: 1px solid #555
-    border-radius: 5px
-    // background-color: #e6da9a
-    +transition(background-color)
-    &:hover
-      background-color: #00c3d9
-  .card__img-btn
-    padding: 0 5px
-    border: 1px solid #555
-    border-radius: 5px
-    // background-color: #a9db73
-    +transition(background-color)
-    &:hover
-      background-color: #00c3d9
-  .card__delete-btn
-    padding: 0 5px
-    border: 1px solid #555
-    border-radius: 5px
-    background-color: #e37676
-    +transition(background-color)
-    &:hover
-      background-color: #e63d3d
-
-  .card__img
-    height: inherit
-    background-size: cover
-    background-position: center
-  .card__descr
-    display: flex
-    flex-direction: column
-    height: 100%
-    margin-bottom: 10px
-    font-size: 0.85em
-    overflow-x: hidden
-  .card__descr > *:not(:last-child)
-    margin-bottom: 5px
-  .card__descr ul
-    padding-left: 15px
-  .descr__title
-    font-size: 0.9em
-    line-height: 1.5em
-
-  .qwe
-    position: absolute
-    width: 100%
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-
-  .modal
-    position: absolute
-    display: flex
-    justify-content: center
-    align-items: center
-    width: 100%
-    height: 100%
-    top: 0
-    left: 0
-    // background-color: #000
-    // opacity: 0.5
-    z-index: 1
-  .modal__content
-    width: 300px
-    padding: 10px
-    border-radius: 5px
-    background-color: #fff
-    p
-      margin-bottom: 5px
-    input
-      width: 100%
-      height: fit-content
-      margin-bottom: 5px
-      font-size: 10px
-      z-index: 2
-    div
-      display: flex
-      justify-content: flex-end
 
 </style>

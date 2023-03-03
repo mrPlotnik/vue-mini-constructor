@@ -40,7 +40,6 @@
           )
           .card__average
             span {{ movie.average }}%
-
 </template>
 
 <script>

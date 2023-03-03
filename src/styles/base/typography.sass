@@ -14,11 +14,7 @@ body
 	position: relative
 	min-height: 100vh
 	font-size: 16px
-	line-height: 1.25em
-	// overflow-x: hidden
-	*
-		// outline: 1px solid #444
-
+	line-height: 1.25
 body,
 input,
 textarea,
@@ -32,34 +28,36 @@ button
 	display: flex
 	flex-direction: column	
 	margin: 0 auto
-// .row	
-// 	width: 100%
-
-nav
-	margin-bottom: 15px		
 
 img
 	width: 100%
 a
 	width: fit-content
 	text-decoration: none
-	// color: $color-main
 	outline: transparent
-	// +transition(color)
 
 h1, h2, h3, h4, h5, h6
 	line-height: inherit
 	font-size: inherit
-	// text-transform: uppercase
-h2
-	margin-bottom: 5px		
 
 .list-reset
 	display: flex
 	list-style: none
+
 .btn-reset
 	border: none
 	cursor: pointer
 	background-color: transparent
-
-  
+.btn
+	padding: 3px 5px
+	border: 1px solid #000
+	border-radius: 5px
+	+transition(background-color)
+.btn--edit
+	background-color: #fff
+	&:hover
+		background-color: #aaa	
+.btn--delete
+	background-color: #e37676
+	&:hover
+		background-color: #e63d3d 	

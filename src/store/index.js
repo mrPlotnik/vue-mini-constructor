@@ -19,6 +19,7 @@ export default new Vuex.Store({
     updateBlocks(state, blocks) {
       // Записываем в state
       state.blocks = blocks;
+      // state.blocks.splice(0, 1, blocks);
       // Записываем в localStorage
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
