@@ -14,8 +14,7 @@
           @click="saveCardImgUrl()"
         ) Save
 
-  .container
-
+  .container.container-style
     .block__top
 
       .block__header
@@ -27,26 +26,8 @@
         )
 
       .block__top-btns
-        div(v-if="editMode")
-          button.btn-reset.btn.btn--edit(
-            :class="{isActive: editMode}"
-            @click="moveBlockUp(blockIndex)"
-          ) Up
-          button.btn-reset.btn.btn--edit(
-            :class="{isActive: editMode}"
-            @click="moveBlockDown(blockIndex)"
-          ) Down
-
-        button.btn-reset.btn.btn--edit(
-          :class="{isActive: editMode}"
-          @click="editModeF()"
-        ) {{ editModeBtnText }}
-
-        div
-          button.btn-reset.btn.btn--delete(
-            @click="deleteBlock()"
-            v-if="editMode"
-          ) Delete block
+        slot(v-if="!editMode")
+        BlockTopBtns(@editMode="editModeF()")
 
     .block__body
 
@@ -101,10 +82,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import BlockTopBtns from './btns/BlockTopBtns.vue';
 
 export default {
   name: 'CardsBlock',
   props: ['block', 'blockIndex'],
+  components: { BlockTopBtns },
   data() {
     return {
       thisBlock: [],
@@ -138,16 +121,12 @@ export default {
     ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
-        this.editModeBtnText = 'Apply';
         this.editMode = true;
       } else {
         this.saveBlockHeader();
         this.saveCardHeader();
         this.saveCardText();
-
         this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-
-        this.editModeBtnText = 'Edit';
         this.editMode = false;
       }
     },
@@ -165,25 +144,6 @@ export default {
           }
         });
     },
-    moveBlockUp(i) {
-      const bs = this.blocksState;
-
-      if (i !== 0) {
-        const qwe = bs.slice(0);
-        [qwe[i], qwe[i - 1]] = [qwe[i - 1], qwe[i]];
-        this.updateBlocks(qwe);
-      }
-    },
-    moveBlockDown(i) {
-      const bs = this.blocksState;
-      const len = bs.length;
-
-      if (i !== len - 1) {
-        const qwe = bs.slice(0);
-        [qwe[i], qwe[i + 1]] = [qwe[i + 1], qwe[i]];
-        this.updateBlocks(qwe);
-      }
-    },
     saveCardText() {
       this.thisBlock.cards
         .forEach((x, i) => {
@@ -192,10 +152,6 @@ export default {
             x.cardText = this.currentCardTexts[i];
           }
         });
-    },
-    deleteBlock() {
-      this.blocksState.splice(this.blockIndex, 1);
-      this.updateBlocks(this.blocksState);
     },
     deleteCard(cardIndex) {
       this.thisBlock.cards.splice(cardIndex, 1);
@@ -266,8 +222,7 @@ export default {
 
 #cards
   position: relative
-  padding: 20px 0
-  background-color: #444
+  padding: 10px 0
 
 .container
   max-width: 1024px
@@ -287,44 +242,9 @@ export default {
   &:hover
     background-size: 55%
 
-.input,
-.textarea
-  width: 100%
-  margin-right: 10px
-  border: none
-  resize: none
-  background-color: #aeaeae
-
-.textarea
-  flex-basis: 100%
-
 .block__top
-  display: flex
-  justify-content: space-between
-  align-items: center
-  margin-bottom: 10px
   h2
     color: #fff
-.block__header
-  width: 100%
-  margin-right: 10px
-  input
-    margin-bottom: 0
-.block__top-btns
-  display: flex
-  justify-content: flex-end
-  flex-shrink: 0
-
-.block__top-header,
-.block__top-header-input
-  margin-bottom: 10px
-  font-weight: 600
-  font-size: 20px
-
-.block__body
-  display: flex
-  flex-wrap: wrap
-  justify-content: flex-start
 
 .card
   display: flex
@@ -332,6 +252,8 @@ export default {
   flex-basis: calc(25% - 8px)
   margin-bottom: 10px
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
+  p
+    color: #000
 .card:not(:nth-child(4n))
   margin-right: 10px
 .card__body

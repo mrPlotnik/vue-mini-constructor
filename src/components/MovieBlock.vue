@@ -1,32 +1,26 @@
 <template lang="pug">
 #movies
-  .container
+  .container.container-style
     .block__top
 
-      .block__top-btns
-        button.btn-reset.btn.block__edit-btn(
-          :class="{isActive: editMode}"
-          @click="editModeF()"
-        ) {{ editModeBtnText }}
-
-        button.btn-reset.btn.block__delete-btn(
-          @click="deleteBlock()"
+      .block__header
+        h2.block__top-header(v-if="!editMode" ) {{ thisBlock.header }}
+        input.input.block__top-header-input(
           v-if="editMode"
-        ) Delete block
+          type="text"
+          v-model="thisBlock.header"
+        )
 
-      h2.block__top-header(v-if="!editMode" ) {{ thisBlock.header }}
-      input.input.block__top-header-input(
-        v-if="editMode"
-        type="text"
-        v-model="thisBlock.header"
-      )
+      .block__top-btns
+        slot(v-if="!editMode")
+        BlockTopBtns(@editMode="editModeF()")
 
     .block__body
 
       .loading(v-if="isLoading === true") Loading...
 
       .error(v-else-if="isError === true")
-        h2 Use VPN
+        span Use VPN
         button(@click="loadMovies(blockIndex)") Try again
 
       .card(
@@ -45,10 +39,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from 'axios';
+import BlockTopBtns from '@/components/btns/BlockTopBtns.vue';
 
 export default {
   name: 'MovieBlock',
   props: ['block', 'blockIndex'],
+  components: { BlockTopBtns },
   data() {
     return {
       thisBlock: [],
@@ -70,20 +66,12 @@ export default {
     ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
-        this.editModeBtnText = 'Apply';
         this.editMode = true;
       } else {
         this.saveBlockHeader();
-
         this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-
-        this.editModeBtnText = 'Edit';
         this.editMode = false;
       }
-    },
-    deleteBlock() {
-      this.blocksState.splice(this.blockIndex, 1);
-      this.updateBlocks(this.blocksState);
     },
     saveBlockHeader() {
       if (this.thisBlock.header === '') {
@@ -133,47 +121,18 @@ export default {
 @import '../styles/base/mixins.sass'
 
 #movies
-  padding: 10px
-  padding-bottom: 20px
-  background-color: #eee
-
-.container
-  max-width: 1024px
-
-.block__top
-  display: flex
-  flex-direction: column
-.block__top-btns
-  display: flex
-  justify-content: flex-end
-  margin-bottom: 10px
-.block__top-header,
-.block__top-header-input
-  margin-bottom: 10px
-  font-weight: 600
-  font-size: 20px
+  padding: 10px 0
 
 .block__body
   display: flex
   flex-wrap: wrap
   justify-content: center
 
-.block__edit-btn
-  padding: 3px 5px
-  border: 1px solid #000
-  border-radius: 5px
-  background-color: #fef257
-  +transition(background-color)
-  &:hover
-    background-color: #00c3d9
-.block__delete-btn
-  padding: 2px 5px
-  border: 1px solid #555
-  border-radius: 5px
-  background-color: #e37676
-  +transition(background-color)
-  &:hover
-    background-color: #e63d3d
+.error
+  display: flex
+  flex-direction: row
+  span
+    margin-right: 10px
 
 .card
   display: flex

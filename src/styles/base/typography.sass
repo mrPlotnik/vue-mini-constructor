@@ -15,6 +15,7 @@ body
 	min-height: 100vh
 	font-size: 16px
 	line-height: 1.25
+	background-color: #444
 body,
 input,
 textarea,
@@ -28,6 +29,10 @@ button
 	display: flex
 	flex-direction: column	
 	margin: 0 auto
+.container-style
+	padding: 20px
+	border: 2px solid #6a6a6a
+	border-radius: 10px
 
 img
 	width: 100%
@@ -39,6 +44,8 @@ a
 h1, h2, h3, h4, h5, h6
 	line-height: inherit
 	font-size: inherit
+h1
+	color: #fff	
 
 .list-reset
 	display: flex
@@ -61,3 +68,49 @@ h1, h2, h3, h4, h5, h6
 	background-color: #e37676
 	&:hover
 		background-color: #e63d3d 	
+.block__edit-btn
+	background-color: #84ff80	
+	&:hover
+		background-color: #4f994c 
+
+
+.block__top
+	display: flex
+	justify-content: space-between
+	align-items: center
+	margin-bottom: 10px	
+.block__header
+	width: 100%
+	margin-right: 10px
+	h2
+		color: #fff
+	input
+		margin-bottom: 0
+.block__top-btns
+	display: flex
+	justify-content: flex-end
+	flex-shrink: 0
+.block__edit-btn
+	margin-right: 5px
+.block__top-header,
+.block__top-header-input
+	margin-bottom: 10px
+	font-weight: 600
+	font-size: 20px
+.block__body
+	display: flex
+	flex-wrap: wrap
+	justify-content: flex-start		
+	p	
+		color: #fff
+
+.input,
+.textarea
+	width: 100%
+	margin-right: 10px
+	border: none
+	resize: none
+	background-color: #aeaeae
+
+.textarea
+	flex-basis: 100%
