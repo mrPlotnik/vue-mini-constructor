@@ -81,21 +81,16 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import saveBlockHeader from '@/mixins/saveBlockHeader';
 import BlockTopBtns from './btns/BlockTopBtns.vue';
 
 export default {
   name: 'CardsBlock',
   props: ['block', 'blockIndex'],
   components: { BlockTopBtns },
+  mixins: [saveBlockHeader],
   data() {
     return {
-      thisBlock: [],
-
-      editMode: false,
-      editModeBtnText: 'Edit',
-
-      currentBlockHeader: '',
       currentCardHeaders: [],
       currentCardTexts: [],
       currentCardImgs: [],
@@ -112,13 +107,7 @@ export default {
       cardImgUrlInput: '',
     };
   },
-  computed: {
-    ...mapGetters({
-      blocksState: 'blockInfo',
-    }),
-  },
   methods: {
-    ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editMode = true;
@@ -128,11 +117,6 @@ export default {
         this.saveCardText();
         this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
         this.editMode = false;
-      }
-    },
-    saveBlockHeader() {
-      if (this.thisBlock.header === '') {
-        this.thisBlock.header = this.currentBlockHeader;
       }
     },
     saveCardHeader() {
@@ -204,14 +188,13 @@ export default {
       }
     },
     updateData() {
-      this.thisBlock = this.blocksState[this.blockIndex];
-      this.currentBlockHeader = this.thisBlock.header;
       this.currentCardHeaders = this.thisBlock.cards.map((x) => x.cardHeader);
       this.currentCardTexts = this.thisBlock.cards.map((x) => x.cardText);
       this.currentCardImgs = this.thisBlock.cards.map((x) => x.cardImg);
     },
   },
   created() {
+    this.updateMainData();
     this.updateData();
   },
 };

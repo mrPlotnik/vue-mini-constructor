@@ -25,29 +25,20 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import saveBlockHeader from '@/mixins/saveBlockHeader';
 import BlockTopBtns from '@/components/btns/BlockTopBtns.vue';
 
 export default {
   name: 'ContentBlock',
   props: ['block', 'blockIndex'],
   components: { BlockTopBtns },
+  mixins: [saveBlockHeader],
   data() {
     return {
-      thisBlock: [],
-      editMode: false,
-      editModeBtnText: 'Edit',
       currentText: '',
-      currentBlockHeader: '',
     };
   },
-  computed: {
-    ...mapGetters({
-      blocksState: 'blockInfo',
-    }),
-  },
   methods: {
-    ...mapActions(['updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editMode = true;
@@ -58,23 +49,14 @@ export default {
         this.editMode = false;
       }
     },
-    saveBlockHeader() {
-      if (this.thisBlock.header === '') {
-        this.thisBlock.header = this.currentBlockHeader;
-      }
-    },
     saveText() {
       if (this.thisBlock.text === '') {
         this.thisBlock.text = this.currentBlockHeader;
       }
     },
-    updateData() {
-      this.thisBlock = this.blocksState[this.blockIndex];
-      this.currentBlockHeader = this.thisBlock.header;
-    },
   },
   created() {
-    this.updateData();
+    this.updateMainData();
   },
 };
 </script>

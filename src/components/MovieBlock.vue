@@ -37,33 +37,22 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import axios from 'axios';
+import saveBlockHeader from '@/mixins/saveBlockHeader';
 import BlockTopBtns from '@/components/btns/BlockTopBtns.vue';
 
 export default {
   name: 'MovieBlock',
   props: ['block', 'blockIndex'],
   components: { BlockTopBtns },
+  mixins: [saveBlockHeader],
   data() {
     return {
-      thisBlock: [],
       isLoading: true,
       isError: false,
-
-      editMode: false,
-      editModeBtnText: 'Edit',
-
-      currentBlockHeader: '',
     };
   },
-  computed: {
-    ...mapGetters({
-      blocksState: 'blockInfo',
-    }),
-  },
   methods: {
-    ...mapActions(['updateBlocks', 'updateBlock']),
     editModeF() {
       if (!this.editMode) {
         this.editMode = true;
@@ -72,15 +61,6 @@ export default {
         this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
         this.editMode = false;
       }
-    },
-    saveBlockHeader() {
-      if (this.thisBlock.header === '') {
-        this.thisBlock.header = this.currentBlockHeader;
-      }
-    },
-    updateData() {
-      this.thisBlock = this.blocksState[this.blockIndex];
-      this.currentBlockHeader = this.thisBlock.header;
     },
     loadMovies(blockIndex) {
       return axios
@@ -112,7 +92,7 @@ export default {
   },
   created() {
     this.loadMovies(this.blockIndex);
-    this.updateData();
+    this.updateMainData();
   },
 };
 </script>
