@@ -1,36 +1,30 @@
 <template lang="pug">
 .btn-wrap
-  button.btn-reset.btn.btn--edit.block__edit-btn(
-    @click="editModeF()"
-  ) {{ editModeBtnText }}
-
   div
     button.btn-reset.btn.btn--delete(
-      @click="deleteBlock()"
+      @click="del()"
       v-if="editMode"
     ) Delete block
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: 'BlockTopBtns',
+  props: ['blockIndex'],
   data() {
-    return {
-      editMode: false,
-      editModeBtnText: 'Edit',
-    };
+    return {};
+  },
+  computed: {
+    ...mapGetters({
+      editMode: 'editMode',
+    }),
   },
   methods: {
-    editModeF() {
-      if (!this.editMode) {
-        this.editModeBtnText = 'Apply';
-        this.editMode = true;
-        this.$emit('editMode');
-      } else {
-        this.editModeBtnText = 'Edit';
-        this.editMode = false;
-        this.$emit('editMode');
-      }
+    ...mapActions(['deleteBlock']),
+    del() {
+      this.deleteBlock(this.blockIndex);
     },
   },
 };

@@ -3,10 +3,15 @@ div
   header.header
     .container
       h1 Mini-constructor
+
+      button.btn-reset.btn.btn--edit.block__edit-btn(
+        @click="editModeF()"
+      ) Edit
+
   main
     div
       section(
-        v-for="(block, blockIndex) in blocksState"
+        v-for="(block, blockIndex) in state"
       )
 
         div(v-if="block.id === 0")
@@ -30,9 +35,6 @@ div
             :block="block"
             :blockIndex="blockIndex"
           )
-            BlockMoveBtns(
-              :blockIndex="blockIndex"
-            )
   footer
     .container
       .btn-wrap
@@ -104,33 +106,38 @@ export default {
   },
   computed: {
     ...mapGetters({
-      blocksState: 'blockInfo',
+      state: 'blockInfo',
+      tempState: 'currentBlocks',
+      editMode: 'editMode',
     }),
   },
   methods: {
-    ...mapActions(['updateBlocks']),
-    // добавить новый блок
+    ...mapActions(['updateBlocks', 'editModeStart', 'editModeFinish']),
     addBlock(blockIndex) {
-      this.blocksState.push(this.defaultBlocks[blockIndex]);
-      this.updateBlocks(this.blocksState);
+      this.state.push(this.defaultBlocks[blockIndex]);
+      this.updateBlocks(this.state);
     },
     moveBlockUp(i) {
-      const bs = this.blocksState;
-
       if (i !== 0) {
-        const newArr = bs.slice(0);
+        const newArr = this.state.slice(0);
         [newArr[i], newArr[i - 1]] = [newArr[i - 1], newArr[i]];
         this.updateBlocks(newArr);
       }
     },
     moveBlockDown(i) {
-      const bs = this.blocksState;
-      const len = bs.length;
+      const len = this.state.length;
 
       if (i !== len - 1) {
-        const newArr = bs.slice(0);
+        const newArr = this.state.slice(0);
         [newArr[i], newArr[i + 1]] = [newArr[i + 1], newArr[i]];
         this.updateBlocks(newArr);
+      }
+    },
+    editModeF() {
+      if (this.editMode === false) {
+        this.editModeStart();
+      } else {
+        this.editModeFinish();
       }
     },
   },

@@ -1,19 +1,10 @@
 <template lang="pug">
-#movies
+.block
   .container.container-style
-    .block__top
-
-      .block__header
-        h2.block__top-header(v-if="!editMode" ) {{ thisBlock.header }}
-        input.input.block__top-header-input(
-          v-if="editMode"
-          type="text"
-          v-model="thisBlock.header"
-        )
-
-      .block__top-btns
-        slot(v-if="!editMode")
-        BlockTopBtns(@editMode="editModeF()")
+    BlockTop(
+      :header="block.header"
+      :blockIndex="blockIndex"
+    )
 
     .block__body
 
@@ -38,14 +29,12 @@
 
 <script>
 import axios from 'axios';
-import saveBlockHeader from '@/mixins/saveBlockHeader';
-import BlockTopBtns from '@/components/btns/BlockTopBtns.vue';
+import BlockTop from '@/components/BlockTop.vue';
 
 export default {
   name: 'MovieBlock',
   props: ['block', 'blockIndex'],
-  components: { BlockTopBtns },
-  mixins: [saveBlockHeader],
+  components: { BlockTop },
   data() {
     return {
       isLoading: true,
@@ -53,15 +42,6 @@ export default {
     };
   },
   methods: {
-    editModeF() {
-      if (!this.editMode) {
-        this.editMode = true;
-      } else {
-        this.saveBlockHeader();
-        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-        this.editMode = false;
-      }
-    },
     loadMovies(blockIndex) {
       return axios
         .get('https://api.themoviedb.org/3/movie/popular', {
@@ -92,7 +72,6 @@ export default {
   },
   created() {
     this.loadMovies(this.blockIndex);
-    this.updateMainData();
   },
 };
 </script>
@@ -100,19 +79,19 @@ export default {
 <style scoped lang="sass">
 @import '../styles/base/mixins.sass'
 
-#movies
-  padding: 10px 0
-
 .block__body
   display: flex
   flex-wrap: wrap
   justify-content: center
 
+.loading
+  color: #fff
 .error
   display: flex
   flex-direction: row
   span
     margin-right: 10px
+    color: #fff
 
 .card
   display: flex

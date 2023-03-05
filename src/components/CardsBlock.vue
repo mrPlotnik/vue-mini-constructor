@@ -1,5 +1,5 @@
 <template lang="pug">
-#cards
+.block
 
   .modal(v-if="showModal")
     .modal-wrap
@@ -15,19 +15,10 @@
         ) Save
 
   .container.container-style
-    .block__top
-
-      .block__header
-        h2.block__top-header(v-if="!editMode" ) {{ block.header }}
-        input.input.block__top-header-input(
-          v-if="editMode"
-          type="text"
-          v-model="thisBlock.header"
-        )
-
-      .block__top-btns
-        slot(v-if="!editMode")
-        BlockTopBtns(@editMode="editModeF()")
+    BlockTop(
+      :header="block.header"
+      :blockIndex="blockIndex"
+    )
 
     .block__body
 
@@ -52,7 +43,7 @@
             ) X
 
           .card__img(
-            :style="{'background-image': `url(${currentCardImgs[cardIndex]})`}"
+            :style="{'background-image': `url(${card.cardImg})`}"
             alt=""
           )
 
@@ -81,19 +72,18 @@
 </template>
 
 <script>
-import saveBlockHeader from '@/mixins/saveBlockHeader';
-import BlockTopBtns from './btns/BlockTopBtns.vue';
+import { mapGetters } from 'vuex';
+import BlockTop from '@/components/BlockTop.vue';
 
 export default {
   name: 'CardsBlock',
   props: ['block', 'blockIndex'],
-  components: { BlockTopBtns },
-  mixins: [saveBlockHeader],
+  components: { BlockTop },
   data() {
     return {
+      currentCards: [],
       currentCardHeaders: [],
       currentCardTexts: [],
-      currentCardImgs: [],
 
       defaultCard: {
         cardHeader: 'Card header',
@@ -107,36 +97,31 @@ export default {
       cardImgUrlInput: '',
     };
   },
+  computed: {
+    ...mapGetters({
+      state: 'blockInfo',
+      editMode: 'editMode',
+    }),
+  },
   methods: {
-    editModeF() {
-      if (!this.editMode) {
-        this.editMode = true;
-      } else {
-        this.saveBlockHeader();
-        this.saveCardHeader();
-        this.saveCardText();
-        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-        this.editMode = false;
-      }
-    },
-    saveCardHeader() {
-      this.thisBlock.cards
+    saveCardHeaders() {
+      this.currentCardHeaders
         .forEach((x, i) => {
-          if (this.currentCardHeaders[i] !== '') {
-            // eslint-disable-next-line no-return-assign, no-param-reassign
-            x.cardHeader = this.currentCardHeaders[i];
+          if (x.cardHeader === '') {
+            // eslint-disable-next-line no-param-reassign
+            x.cardHeader = this.block.cards[i].cardHeader;
           }
         });
     },
-    saveCardText() {
-      this.thisBlock.cards
-        .forEach((x, i) => {
-          if (this.currentCardTexts[i] !== '') {
-            // eslint-disable-next-line no-return-assign, no-param-reassign
-            x.cardText = this.currentCardTexts[i];
-          }
-        });
-    },
+    // saveCardTexts() {
+    //   this.thisBlock.cards
+    //     .forEach((x, i) => {
+    //       if (this.currentCardTexts[i] !== '') {
+    //         // eslint-disable-next-line no-return-assign, no-param-reassign
+    //         x.cardText = this.currentCardTexts[i];
+    //       }
+    //     });
+    // },
     deleteCard(cardIndex) {
       this.thisBlock.cards.splice(cardIndex, 1);
       this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
@@ -187,28 +172,24 @@ export default {
         this.updateData();
       }
     },
-    updateData() {
-      this.currentCardHeaders = this.thisBlock.cards.map((x) => x.cardHeader);
-      this.currentCardTexts = this.thisBlock.cards.map((x) => x.cardText);
-      this.currentCardImgs = this.thisBlock.cards.map((x) => x.cardImg);
-    },
   },
   created() {
-    this.updateMainData();
-    this.updateData();
+    this.currentCardHeaders = this.block.cards.map((x) => x.cardHeader);
+    this.currentCardTexts = this.block.cards.map((x) => x.cardText);
+  },
+  watch: {
+    editMode(bool) {
+      if (!bool) {
+        this.saveCardHeaders();
+        // this.saveCardTexts();
+      }
+    },
   },
 };
 </script>
 
 <style scoped lang="sass">
 @import '../styles/base/mixins.sass'
-
-#cards
-  position: relative
-  padding: 10px 0
-
-.container
-  max-width: 1024px
 
 .card-plus
   height: 300px
