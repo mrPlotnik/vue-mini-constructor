@@ -43,7 +43,7 @@
             ) X
 
           .card__img(
-            :style="{'background-image': `url(${card.cardImg})`}"
+            :style="{'background-image': `url(${card.img})`}"
             alt=""
           )
 
@@ -51,17 +51,17 @@
 
           .card__descr
 
-            h3(v-if="!editMode" ) {{ card.cardHeader }}
+            h3(v-if="!editMode" ) {{ card.header }}
             input.input.block__header-input(
               v-if="editMode"
               type="text"
-              v-model="cards[cardIndex].cardHeader"
+              v-model="cards[cardIndex].header"
             )
 
-            p.card__text(v-if="!editMode") {{ card.cardText }}
+            p.card__text(v-if="!editMode") {{ card.text }}
             textarea.textarea.block__text-input(
               v-if="editMode"
-              v-model="cards[cardIndex].cardText"
+              v-model="cards[cardIndex].text"
             )
 
       .card.card-plus(v-if="editMode")
@@ -85,9 +85,9 @@ export default {
       cards: [],
 
       defaultCard: {
-        cardHeader: 'Card header',
-        cardText: 'Card text',
-        cardImg: 'img/01.jpg',
+        header: 'Card header',
+        text: 'Card text',
+        img: 'img/01.jpg',
       },
 
       showModal: false,
@@ -105,11 +105,11 @@ export default {
     ...mapActions(['updateCards', 'updateCards']),
     validCards() {
       this.cards = this.cards.map((x, i) => {
-        if (x.cardHeader === '') {
-          return { ...x, cardHeader: this.block.cards[i].cardHeader };
+        if (x.header === '') {
+          return { ...x, header: this.block.cards[i].header };
         }
-        if (x.cardText === '') {
-          return { ...x, cardText: this.block.cards[i].cardText };
+        if (x.text === '') {
+          return { ...x, text: this.block.cards[i].text };
         }
         return x;
       });
@@ -135,7 +135,7 @@ export default {
       const regex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
       if (regex.test(this.cardImgUrlInput)) {
         this.cardImgUrl = this.cardImgUrlInput;
-        this.cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
+        this.cards[this.cardIdEdit].img = this.cardImgUrlInput;
         this.showModal = false;
       } else {
         this.showModal = false;
