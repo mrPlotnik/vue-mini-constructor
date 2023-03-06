@@ -123,9 +123,17 @@ export default {
     },
     deleteCard(cardIndex) {
       this.cards.splice(cardIndex, 1);
+      this.updateCards({
+        blockId: this.blockIndex,
+        cards: this.cards,
+      });
     },
     addCard() {
       this.cards.push(this.defaultCard);
+      this.updateCards({
+        blockId: this.blockIndex,
+        cards: this.cards,
+      });
     },
     showInputModal(cardIndex) {
       this.showModal = true;
@@ -144,7 +152,6 @@ export default {
     moveCardLeft(i) {
       const c = this.cards;
       if (i !== 0) {
-        console.log('asd');
         [c[i], c[i - 1]] = [c[i - 1], c[i]];
         this.reload += 1;
       }

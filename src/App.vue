@@ -1,7 +1,6 @@
-<template>
-  <div id="app">
-    <router-view/>
-  </div>
+<template lang="pug">
+#app
+  router-view
 </template>
 
 <script>
@@ -9,14 +8,14 @@ import { mapMutations } from 'vuex';
 
 export default {
   methods: {
-    ...mapMutations(['updateBlocks']),
+    ...mapMutations(['loadBlocks']),
   },
   created() {
     // Проверяем наличие данных в localStorage
     const blocks = JSON.parse(localStorage.getItem('blocks'));
     // Если данные есть, вызываем мутацию
     if (blocks) {
-      this.updateBlocks(blocks);
+      this.loadBlocks(blocks);
     }
   },
 };

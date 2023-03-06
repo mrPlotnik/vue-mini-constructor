@@ -11,7 +11,7 @@ export default new Vuex.Store({
 
   getters: {
     // Получаем информацию о блоках
-    blockInfo(state) {
+    allBlocks(state) {
       return state.blocks;
     },
     editMode(state) {
@@ -20,14 +20,19 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    updateBlocks(state, blocks) {
+    loadBlocks(state, blocks) {
       state.blocks = blocks;
-      // state.blocks.splice(0, 1, blocks);
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
-    updateBlock(state, { blockId, block }) {
-      state.blocks[blockId] = block;
-      // state.blocks.splice(0, 1, blocks);
+    addBlock(state, block) {
+      state.blocks.push(block);
+      localStorage.setItem('blocks', JSON.stringify(state.blocks));
+    },
+    deleteBlock(state, blockIndex) {
+      state.blocks.splice(blockIndex, 1);
+    },
+    updateMoveBlocks(state, blocks) {
+      state.blocks = blocks;
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
     updateBlockHeader(state, { blockId, header }) {
@@ -39,33 +44,30 @@ export default new Vuex.Store({
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
     updateCards(state, { blockId, cards }) {
-      // Vue.set(state.blocks[blockId], blockId, cards);
       state.blocks[blockId].cards = cards;
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
-
-    loadMovies(state, { blockId, movies }) {
-      // Записываем в state
-      state.blocks[blockId].movies = movies;
-      // Записываем в localStorage
-      localStorage.setItem('blocks', JSON.stringify(state.blocks));
-    },
-
     editModeToggle(state) {
       state.editMode = !state.editMode;
     },
-
-    deleteBlock(state, blockIndex) {
-      state.blocks.splice(blockIndex, 1);
+    loadMovies(state, { blockId, movies }) {
+      state.blocks[blockId].movies = movies;
+      localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
   },
 
   actions: {
-    updateBlocks(context, blocks) {
-      context.commit('updateBlocks', blocks);
+    loadBlocks(context, blocks) {
+      context.commit('loadBlocks', blocks);
     },
-    updateBlock(context, { blockId, block }) {
-      context.commit('updateBlock', { blockId, block });
+    addBlock(context, block) {
+      context.commit('addBlock', block);
+    },
+    deleteBlock(context, blockIndex) {
+      context.commit('deleteBlock', blockIndex);
+    },
+    updateMoveBlocks(context, blocks) {
+      context.commit('updateMoveBlocks', blocks);
     },
     updateBlockHeader(context, { blockId, header }) {
       context.commit('updateBlockHeader', { blockId, header });
@@ -76,17 +78,11 @@ export default new Vuex.Store({
     updateCards(context, { blockId, cards }) {
       context.commit('updateCards', { blockId, cards });
     },
-
-    loadMovies(context, { blockId, block }) {
-      context.commit('loadMovies', { blockId, movies: block });
-    },
-
     editModeToggle(context) {
       context.commit('editModeToggle');
     },
-
-    deleteBlock(context, blockIndex) {
-      context.commit('deleteBlock', blockIndex);
+    loadMovies(context, { blockId, block }) {
+      context.commit('loadMovies', { blockId, movies: block });
     },
   },
 

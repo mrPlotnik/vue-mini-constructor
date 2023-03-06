@@ -14,30 +14,31 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'MoveBlockBtns',
   props: ['block', 'blockIndex'],
+  data() {
+    return {
+
+    };
+  },
   computed: {
     ...mapGetters({
-      blocksState: 'blockInfo',
+      state: 'allBlocks',
     }),
   },
   methods: {
-    ...mapActions(['updateBlocks']),
+    ...mapActions(['updateMoveBlocks']),
     moveBlockUp(i) {
-      const bs = this.blocksState;
-
+      const bs = this.state.map((block) => ({ ...block }));
       if (i !== 0) {
-        const qwe = bs.slice(0);
-        [qwe[i], qwe[i - 1]] = [qwe[i - 1], qwe[i]];
-        this.updateBlocks(qwe);
+        [bs[i], bs[i - 1]] = [bs[i - 1], bs[i]];
+        this.updateMoveBlocks(bs);
       }
     },
     moveBlockDown(i) {
-      const bs = this.blocksState;
+      const bs = this.state.map((block) => ({ ...block }));
       const len = bs.length;
-
       if (i !== len - 1) {
-        const qwe = bs.slice(0);
-        [qwe[i], qwe[i + 1]] = [qwe[i + 1], qwe[i]];
-        this.updateBlocks(qwe);
+        [bs[i], bs[i + 1]] = [bs[i + 1], bs[i]];
+        this.updateMoveBlocks(bs);
       }
     },
   },
