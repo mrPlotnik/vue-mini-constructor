@@ -62,7 +62,7 @@ export default new Vuex.Store({
       }
     },
     deleteBlock(state, blockIndex) {
-      state.currentBlocks.splice(blockIndex, 1);
+      state.blocks.splice(blockIndex, 1);
     },
   },
 

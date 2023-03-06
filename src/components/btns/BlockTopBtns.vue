@@ -2,8 +2,8 @@
 .btn-wrap
   div
     button.btn-reset.btn.btn--delete(
-      @click="del()"
       v-if="editMode"
+      @click="del()"
     ) Delete block
 </template>
 
