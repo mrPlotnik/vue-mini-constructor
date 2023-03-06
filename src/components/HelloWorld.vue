@@ -5,8 +5,8 @@ div
       h1 Mini-constructor
 
       button.btn-reset.btn.btn--edit.block__edit-btn(
-        @click="editModeF()"
-      ) Edit
+        @click="editModeBtn()"
+      ) {{ btnText }}
 
   main
     div
@@ -64,6 +64,7 @@ export default {
   },
   data() {
     return {
+      btnText: 'Edit',
       defaultBlocks: [
         {
           id: 0,
@@ -111,7 +112,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['updateBlocks', 'editModeStart', 'editModeFinish']),
+    ...mapActions(['updateBlocks', 'editModeToggle']),
     addBlock(blockIndex) {
       this.state.push(this.defaultBlocks[blockIndex]);
       this.updateBlocks(this.state);
@@ -132,11 +133,12 @@ export default {
         this.updateBlocks(newArr);
       }
     },
-    editModeF() {
-      if (this.editMode === false) {
-        this.editModeStart();
+    editModeBtn() {
+      this.editModeToggle();
+      if (this.editMode) {
+        this.btnText = 'Apply';
       } else {
-        this.editModeFinish();
+        this.btnText = 'Edit';
       }
     },
   },

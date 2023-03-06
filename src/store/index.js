@@ -51,16 +51,10 @@ export default new Vuex.Store({
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
 
-    editModeStart(state) {
-      if (state.editMode === false) {
-        state.editMode = true;
-      }
+    editModeToggle(state) {
+      state.editMode = !state.editMode;
     },
-    editModeFinish(state) {
-      if (state.editMode === true) {
-        state.editMode = false;
-      }
-    },
+
     deleteBlock(state, blockIndex) {
       state.blocks.splice(blockIndex, 1);
     },
@@ -87,12 +81,10 @@ export default new Vuex.Store({
       context.commit('loadMovies', { blockId, movies: block });
     },
 
-    editModeStart(context) {
-      context.commit('editModeStart');
+    editModeToggle(context) {
+      context.commit('editModeToggle');
     },
-    editModeFinish(context) {
-      context.commit('editModeFinish');
-    },
+
     deleteBlock(context, blockIndex) {
       context.commit('deleteBlock', blockIndex);
     },
