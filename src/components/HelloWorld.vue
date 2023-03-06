@@ -107,7 +107,6 @@ export default {
   computed: {
     ...mapGetters({
       state: 'blockInfo',
-      tempState: 'currentBlocks',
       editMode: 'editMode',
     }),
   },

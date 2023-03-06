@@ -30,7 +30,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      state: 'blockInfo',
       editMode: 'editMode',
     }),
   },

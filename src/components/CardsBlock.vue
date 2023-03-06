@@ -20,9 +20,9 @@
       :blockIndex="blockIndex"
     )
 
-    .block__body
+    .block__body(:key="reload")
 
-      .card(v-for="(card, cardIndex) in block.cards")
+      .card(v-for="(card, cardIndex) in cards" :key="cardIndex")
 
         .card__head
 
@@ -55,13 +55,13 @@
             input.input.block__header-input(
               v-if="editMode"
               type="text"
-              v-model="currentCardHeaders[cardIndex]"
+              v-model="cards[cardIndex].cardHeader"
             )
 
             p.card__text(v-if="!editMode") {{ card.cardText }}
             textarea.textarea.block__text-input(
               v-if="editMode"
-              v-model="currentCardTexts[cardIndex]"
+              v-model="cards[cardIndex].cardText"
             )
 
       .card.card-plus(v-if="editMode")
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import BlockTop from '@/components/BlockTop.vue';
 
 export default {
@@ -81,9 +81,8 @@ export default {
   components: { BlockTop },
   data() {
     return {
-      currentCards: [],
-      currentCardHeaders: [],
-      currentCardTexts: [],
+      reload: 0,
+      cards: [],
 
       defaultCard: {
         cardHeader: 'Card header',
@@ -99,38 +98,34 @@ export default {
   },
   computed: {
     ...mapGetters({
-      state: 'blockInfo',
       editMode: 'editMode',
     }),
   },
   methods: {
-    saveCardHeaders() {
-      this.currentCardHeaders
-        .forEach((x, i) => {
-          if (x.cardHeader === '') {
-            // eslint-disable-next-line no-param-reassign
-            x.cardHeader = this.block.cards[i].cardHeader;
-          }
-        });
+    ...mapActions(['updateCards', 'updateCards']),
+    validCards() {
+      this.cards = this.cards.map((x, i) => {
+        if (x.cardHeader === '') {
+          return { ...x, cardHeader: this.block.cards[i].cardHeader };
+        }
+        if (x.cardText === '') {
+          return { ...x, cardText: this.block.cards[i].cardText };
+        }
+        return x;
+      });
     },
-    // saveCardTexts() {
-    //   this.thisBlock.cards
-    //     .forEach((x, i) => {
-    //       if (this.currentCardTexts[i] !== '') {
-    //         // eslint-disable-next-line no-return-assign, no-param-reassign
-    //         x.cardText = this.currentCardTexts[i];
-    //       }
-    //     });
-    // },
+    saveCards() {
+      this.validCards();
+      this.updateCards({
+        blockId: this.blockIndex,
+        cards: this.cards,
+      });
+    },
     deleteCard(cardIndex) {
-      this.thisBlock.cards.splice(cardIndex, 1);
-      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-      this.updateData();
+      this.cards.splice(cardIndex, 1);
     },
     addCard() {
-      this.thisBlock.cards.push(this.defaultCard);
-      this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-      this.updateData();
+      this.cards.push(this.defaultCard);
     },
     showInputModal(cardIndex) {
       this.showModal = true;
@@ -138,51 +133,45 @@ export default {
     },
     saveCardImgUrl() {
       const regex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
-
       if (regex.test(this.cardImgUrlInput)) {
         this.cardImgUrl = this.cardImgUrlInput;
-
-        this.thisBlock.cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
-
-        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-        this.updateData();
-
+        this.cards[this.cardIdEdit].cardImg = this.cardImgUrlInput;
         this.showModal = false;
       } else {
-        // alert('Invalid URL');
         this.showModal = false;
       }
     },
     moveCardLeft(i) {
-      const bs = this.thisBlock;
-
+      const c = this.cards;
       if (i !== 0) {
-        [bs.cards[i], bs.cards[i - 1]] = [bs.cards[i - 1], bs.cards[i]];
-        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-        this.updateData();
+        console.log('asd');
+        [c[i], c[i - 1]] = [c[i - 1], c[i]];
+        this.reload += 1;
       }
     },
     moveCardRight(i) {
-      const bs = this.thisBlock;
-      const len = bs.cards.length;
-
+      const c = this.cards;
+      const len = c.length;
       if (i !== len - 1) {
-        [bs.cards[i], bs.cards[i + 1]] = [bs.cards[i + 1], bs.cards[i]];
-        this.updateBlock({ blockId: this.blockIndex, block: this.thisBlock });
-        this.updateData();
+        [c[i], c[i + 1]] = [c[i + 1], c[i]];
+        this.reload += 1;
       }
     },
   },
   created() {
-    this.currentCardHeaders = this.block.cards.map((x) => x.cardHeader);
-    this.currentCardTexts = this.block.cards.map((x) => x.cardText);
+    this.cards = this.block.cards.map((card) => ({ ...card }));
   },
   watch: {
     editMode(bool) {
       if (!bool) {
-        this.saveCardHeaders();
-        // this.saveCardTexts();
+        this.saveCards();
       }
+    },
+    block: {
+      deep: true,
+      handler() {
+        this.cards = this.block.cards.map((card) => ({ ...card }));
+      },
     },
   },
 };
