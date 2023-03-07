@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   header.header
-    .container
+    .container.container-style
       h1 Mini-constructor
 
       button.btn-reset.btn.btn--edit.block__edit-btn(

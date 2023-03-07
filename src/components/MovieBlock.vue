@@ -1,5 +1,5 @@
 <template lang="pug">
-.block
+#movies.block
   .container.container-style
     BlockTop(
       :header="block.header"
@@ -14,17 +14,16 @@
         span Use VPN
         button(@click="loadMovies(blockIndex)") Try again
 
-      .card(
+      .mcard(
         v-else
-        v-for="(movie, movieIndex) in thisBlock.movies"
+        v-for="(movie, movieIndex) in block.movies"
       )
-        .card__head
-          .card__img(
-            :style="{'background-image': `url(${movie.poster_path})`}"
-            alt="Poster"
-          )
-          .card__average
-            span {{ movie.average }}%
+        .mcard__img(
+          :style="{'background-image': `url(${movie.poster_path})`}"
+          alt="Poster"
+        )
+        .mcard__average
+          span {{ movie.average }}%
 </template>
 
 <script>
@@ -92,57 +91,5 @@ export default {
   span
     margin-right: 10px
     color: #fff
-
-.card
-  display: flex
-  flex-direction: column
-  // flex-basis: calc(20% - 10px)
-  margin-right: 10px
-  margin-bottom: 20px
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
-.card__head
-  position: relative
-  display: flex
-  flex-direction: column
-  width: 110px
-  height: 165px
-
-.card__head-btns
-  position: absolute
-  display: flex
-  justify-content: space-between
-  align-items: center
-  width: 100%
-  padding: 5px
-  background-color: #fff6
-
-.card__img
-  height: inherit
-  background-size: cover
-  background-position: center
-.card__average
-  position: absolute
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 40px
-  width: 40px
-  bottom: -15px
-  left: 10px
-  color: #fff
-  // border: 3px solid #00c3d9
-  border-radius: 50%
-  font-size: 0.7em
-  font-weight: 600
-  background-color: #262626
-  span
-    display: flex
-    justify-content: center
-    align-items: center
-    height: 32px
-    width: 32px
-    border-radius: 50%
-    border: 2px solid #00c3d9
-    background-color: #262626
 
 </style>

@@ -30,7 +30,7 @@ button
 	flex-direction: column	
 	margin: 0 auto
 .container-style
-	padding: 20px
+	padding: 10px
 	border: 2px solid #6a6a6a
 	border-radius: 10px
 
@@ -84,10 +84,9 @@ h1
 .block__header
 	width: 100%
 	margin-right: 10px
-	h2
-		color: #fff
-	input
+	h2, input
 		margin-bottom: 0
+		color: #fff	
 .block__top-btns
 	display: flex
 	justify-content: flex-end
@@ -106,12 +105,116 @@ h1
 	p	
 		color: #fff
 
+// Global 
 .input,
 .textarea
 	width: 100%
 	border: none
 	resize: none
 	background-color: #aeaeae
-
 .textarea
 	flex-basis: 100%
+
+//Cards block
+.card
+	display: flex
+	flex-direction: column
+	flex-basis: calc(50% - 5px)
+	margin-bottom: 10px
+	border-radius: 5px
+	overflow: hidden
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
+	p
+		color: #000
+.card:not(:nth-child(2n))
+	margin-right: 10px
+.card__body
+	display: flex
+	flex-direction: column
+	flex-grow: 1
+	justify-content: space-between
+	height: 150px
+	padding: 10px
+	background-color: #e1e1e1
+
+.card__head
+	position: relative
+	display: flex
+	flex-direction: column
+	height: 150px
+.card__head-btns
+	position: absolute
+	display: flex
+	justify-content: space-between
+	align-items: center
+	width: 100%
+	padding: 5px
+	background-color: #fff6
+	.btn--edit
+		padding: 0 5px
+	.btn--delete
+		padding: 0 5px
+.card__arrow-btns-wrap
+	display: flex
+	align-items: center
+
+.card__img
+	height: inherit
+	background-size: cover
+	background-position: center
+.card__descr
+	display: flex
+	flex-direction: column
+	height: 100%
+	margin-bottom: 10px
+	overflow-x: hidden
+.card__descr > *:not(:last-child)
+	margin-bottom: 5px
+.card__descr h3,
+.card__descr input
+	font-size: 0.9em
+	font-weight: 600
+.card__descr p,
+.card__descr textarea
+	font-size: 0.85em
+ 
+// Movies block
+#movies .block__body
+	margin-right: -10px	
+.mcard
+	position: relative
+	display: flex
+	flex-direction: column
+	width: 140px
+	height: calc(140px / 0.66)	
+	margin-right: 10px	
+	margin-bottom: 20px	
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
+.mcard__img
+	height: inherit
+	border-radius: 3px
+	background-size: cover
+	background-position: center
+.mcard__average
+	position: absolute
+	display: flex
+	justify-content: center
+	align-items: center
+	height: 40px
+	width: 40px
+	bottom: -15px
+	left: 10px
+	color: #fff
+	border-radius: 50%
+	font-size: 0.7em
+	font-weight: 600
+	background-color: #262626
+	span
+		display: flex
+		justify-content: center
+		align-items: center
+		height: 32px
+		width: 32px
+		border-radius: 50%
+		border: 2px solid #00c3d9
+		background-color: #262626	 

@@ -1,5 +1,5 @@
 <template lang="pug">
-.block
+#cards.block
 
   .modal(v-if="showModal")
     .modal-wrap
@@ -52,14 +52,14 @@
           .card__descr
 
             h3(v-if="!editMode" ) {{ card.header }}
-            input.input.block__header-input(
+            input.input(
               v-if="editMode"
               type="text"
               v-model="cards[cardIndex].header"
             )
 
             p.card__text(v-if="!editMode") {{ card.text }}
-            textarea.textarea.block__text-input(
+            textarea.textarea(
               v-if="editMode"
               v-model="cards[cardIndex].text"
             )
@@ -205,65 +205,6 @@ export default {
 .block__top
   h2
     color: #fff
-
-.card
-  display: flex
-  flex-direction: column
-  flex-basis: calc(25% - 8px)
-  margin-bottom: 10px
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6)
-  p
-    color: #000
-.card:not(:nth-child(4n))
-  margin-right: 10px
-.card__body
-  display: flex
-  flex-direction: column
-  flex-grow: 1
-  justify-content: space-between
-  height: 150px
-  padding: 10px
-  background-color: #e1e1e1
-
-.card__head
-  position: relative
-  display: flex
-  flex-direction: column
-  height: 150px
-.card__head-btns
-  position: absolute
-  display: flex
-  justify-content: space-between
-  align-items: center
-  width: 100%
-  padding: 5px
-  background-color: #fff6
-  .btn--edit
-    padding: 0 5px
-  .btn--delete
-    padding: 0 5px
-.card__arrow-btns-wrap
-  display: flex
-  align-items: center
-
-.card__img
-  height: inherit
-  background-size: cover
-  background-position: center
-.card__descr
-  display: flex
-  flex-direction: column
-  height: 100%
-  margin-bottom: 10px
-  font-size: 0.85em
-  overflow-x: hidden
-.card__descr > *:not(:last-child)
-  margin-bottom: 5px
-.card__descr ul
-  padding-left: 15px
-.descr__title
-  font-size: 0.9em
-  line-height: 1.5em
 
 .modal-wrap
   position: absolute

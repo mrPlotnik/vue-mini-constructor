@@ -1,5 +1,5 @@
 <template lang="pug">
-.block
+#content.block
   .container.container-style
     BlockTop(
         :header="block.header"
@@ -12,7 +12,6 @@
         v-if="editMode"
         v-model="currentText"
       )
-
 </template>
 
 <script>

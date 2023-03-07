@@ -10,7 +10,6 @@ export default new Vuex.Store({
   },
 
   getters: {
-    // Получаем информацию о блоках
     allBlocks(state) {
       return state.blocks;
     },
@@ -30,6 +29,7 @@ export default new Vuex.Store({
     },
     deleteBlock(state, blockIndex) {
       state.blocks.splice(blockIndex, 1);
+      localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
     updateMoveBlocks(state, blocks) {
       state.blocks = blocks;
@@ -47,12 +47,12 @@ export default new Vuex.Store({
       state.blocks[blockId].cards = cards;
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
-    editModeToggle(state) {
-      state.editMode = !state.editMode;
-    },
     loadMovies(state, { blockId, movies }) {
       state.blocks[blockId].movies = movies;
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
+    },
+    editModeToggle(state) {
+      state.editMode = !state.editMode;
     },
   },
 
@@ -78,13 +78,11 @@ export default new Vuex.Store({
     updateCards(context, { blockId, cards }) {
       context.commit('updateCards', { blockId, cards });
     },
-    editModeToggle(context) {
-      context.commit('editModeToggle');
-    },
     loadMovies(context, { blockId, block }) {
       context.commit('loadMovies', { blockId, movies: block });
     },
+    editModeToggle(context) {
+      context.commit('editModeToggle');
+    },
   },
-
-  modules: {},
 });
