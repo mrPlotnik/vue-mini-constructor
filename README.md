@@ -1,4 +1,4 @@
-# :wrench: :construction: Mini-constructor. 
+# :wrench: :construction: Page mini-constructor. 
 
 Using:
   - Vue CLI,
