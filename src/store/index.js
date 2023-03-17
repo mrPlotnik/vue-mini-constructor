@@ -47,10 +47,6 @@ export default new Vuex.Store({
       state.blocks[blockId].cards = cards;
       localStorage.setItem('blocks', JSON.stringify(state.blocks));
     },
-    loadMovies(state, { blockId, movies }) {
-      state.blocks[blockId].movies = movies;
-      localStorage.setItem('blocks', JSON.stringify(state.blocks));
-    },
     editModeToggle(state) {
       state.editMode = !state.editMode;
     },
@@ -77,9 +73,6 @@ export default new Vuex.Store({
     },
     updateCards(context, { blockId, cards }) {
       context.commit('updateCards', { blockId, cards });
-    },
-    loadMovies(context, { blockId, block }) {
-      context.commit('loadMovies', { blockId, movies: block });
     },
     editModeToggle(context) {
       context.commit('editModeToggle');

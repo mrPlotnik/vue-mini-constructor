@@ -100,7 +100,6 @@ export default {
         {
           id: 2,
           header: 'Popular movies',
-          movies: [],
         },
       ],
     };

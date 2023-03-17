@@ -16,7 +16,7 @@
 
       .mcard(
         v-else
-        v-for="(movie, movieIndex) in block.movies"
+        v-for="(movie, movieIndex) in movies"
       )
         .mcard__img(
           :style="{'background-image': `url(${movie.poster_path})`}"
@@ -38,10 +38,11 @@ export default {
     return {
       isLoading: true,
       isError: false,
+      movies: [],
     };
   },
   methods: {
-    loadMovies(blockIndex) {
+    loadMovies() {
       return axios
         .get('https://api.themoviedb.org/3/movie/popular', {
           params: {
@@ -59,7 +60,7 @@ export default {
             obj.average = x.vote_average * 10;
             arr.push(obj);
           });
-          this.$store.dispatch('loadMovies', { blockId: blockIndex, block: arr });
+          this.movies = arr;
           this.isLoading = false;
           this.isError = false;
         })
@@ -70,7 +71,7 @@ export default {
     },
   },
   created() {
-    this.loadMovies(this.blockIndex);
+    this.loadMovies();
   },
 };
 </script>
